@@ -3,4 +3,27 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="update_button">Update</string>
+    <string name="set_button">Set</string>
+    <string name="set_new_page_goal">Enter new page goal</string>
+    <string name="cancel">Cancel</string>
+    <string name="set">set</string>
+    <string name="no_goal_text">No current daily page goal.\n Set one to get started!</string>
+    <string name="goal_start_set">Read 0 out of %1d pages today. Get reading!</string>
+    <string name="goal_progress_set">Read %1d out of %1d pages today. Keep going!</string>
+    <string name="goal_progress_done">Read %1d out of %1d pages today. Great job!</string>
+    <string name="pages_read_today">Pages read today</string>
+    <string name="currently_reading">Currently Reading</string>
+    <string name="to_read">To Read</string>
+    <string name="finished_reading">Finished Reading</string>
+    <string name="empty_list">This list is currently empty</string>
+    <string name="enter_book_info">Enter book information</string>
+    <string name="book_title">Book Title</string>
+    <string name="date_started">Select Date Started (optional)</string>
+    <string name="page_count">Page Count</string>
+    <string name="reselect">Reselect</string>
+    <string name="all_fields_except_book_title_are_optional">*All fields except book title are optional*</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>

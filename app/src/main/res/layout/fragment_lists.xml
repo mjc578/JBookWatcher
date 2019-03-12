@@ -1,14 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ListsFragment">
+    android:orientation="vertical"
+    android:id="@+id/lists_container">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="0dp"
+        android:layout_weight="1.0"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:id="@+id/LL_curr_reading"
+        android:background="@android:color/holo_green_light">
 
-</FrameLayout>
+        <ImageView android:layout_width="88dp"
+            android:layout_height="88dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="24dp"
+            android:contentDescription=""
+            />
+
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.0"
+                android:text="@string/currently_reading"
+                android:textStyle="bold"
+                android:gravity="bottom"
+                android:textAlignment="center"
+                android:paddingBottom="4dp"
+                android:textSize="24sp"/>
+
+            <TextView android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.0"
+                android:text="placeholder for num entries"
+                android:textAlignment="center"
+                android:paddingTop="4dp"
+                android:id="@+id/num_entries_currently_reading"/>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.0"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:id="@+id/LL_finished_read"
+        android:background="@android:color/holo_red_light">
+
+        <ImageView android:layout_width="88dp"
+            android:layout_height="88dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="24dp"
+            android:contentDescription=""
+            android:id="@+id/finished_reading_image"
+            />
+
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.0"
+                android:text="@string/finished_reading"
+                android:textStyle="bold"
+                android:gravity="bottom"
+                android:textAlignment="center"
+                android:paddingBottom="4dp"
+                android:textSize="24sp"/>
+
+            <TextView android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.0"
+                android:text="placeholder for num entries"
+                android:textAlignment="center"
+                android:paddingTop="4dp"
+                android:id="@+id/num_entries_finished_reading"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.0"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:id="@+id/LL_to_read"
+        android:background="@android:color/holo_blue_bright">
+
+        <ImageView android:layout_width="88dp"
+            android:layout_height="88dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="24dp"
+            android:contentDescription=""
+            android:id="@+id/to_read_image"
+            />
+
+
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.0"
+                android:text="@string/to_read"
+                android:textStyle="bold"
+                android:gravity="bottom"
+                android:textAlignment="center"
+                android:paddingBottom="4dp"
+                android:textSize="24sp"/>
+
+            <TextView android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.0"
+                android:text="placeholder for num entries"
+                android:textAlignment="center"
+                android:paddingTop="4dp"
+                android:id="@+id/num_entries_to_read"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
