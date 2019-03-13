@@ -24,6 +24,7 @@ public class GoalFragment extends Fragment {
     Button cancelButton;
     Button updateButton;
     TextView goalText;
+    int goalVal;
 
     public GoalFragment() {
         // Required empty public constructor
@@ -35,19 +36,20 @@ public class GoalFragment extends Fragment {
         // Inflate the layout for this fragment
 
         View fView = inflater.inflate(R.layout.fragment_goal, container, false);
-        setSetListener(fView);
 
         goalButton = fView.findViewById(R.id.set_goal_button);
         cancelButton = fView.findViewById(R.id.cancel_goal_button);
         updateButton = fView.findViewById(R.id.update_goal_button);
         goalText = fView.findViewById(R.id.goal_text);
 
+        setSetListener(fView);
+        setCancelListener(fView);
+        setUpdateListener(fView);
 
         return fView;
     }
 
     private void setSetListener(View fView){
-
         fView.findViewById(R.id.set_goal_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,22 +75,98 @@ public class GoalFragment extends Fragment {
                                     Toast.makeText(getContext(), "No value was entered", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                int goalVal = Integer.parseInt(goalInput);
+                                else if(Integer.parseInt(goalInput) == 0){
+                                    Toast.makeText(getContext(), "Enter a non-zero value", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                goalVal = Integer.parseInt(goalInput);
+                                goalText.setText(getString(R.string.goal_start_set, goalVal));
                                 goalButton.setVisibility(View.GONE);
                                 cancelButton.setVisibility(View.VISIBLE);
                                 updateButton.setVisibility(View.VISIBLE);
-
                                 //Dismiss once everything is OK.
                                 dLog.dismiss();
                             }
                         });
                     }
                 });
-
                 dLog.show();
             }
         });
 
     }
 
+    private void setCancelListener(View fView){
+        fView.findViewById(R.id.cancel_goal_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder dLog = new AlertDialog.Builder(getContext());
+                dLog.setTitle("Cancel Goal");
+                dLog.setMessage("Are you sure you want to cancel your page goal?");
+                dLog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                       goalText.setText(R.string.no_goal_text);
+                       cancelButton.setVisibility(View.GONE);
+                       updateButton.setVisibility(View.GONE);
+                       goalButton.setVisibility(View.VISIBLE);
+                    }
+                });
+                dLog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dLog.show();
+            }
+        });
+    }
+
+    private void setUpdateListener(View fView){
+        fView.findViewById(R.id.update_goal_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final View dView = View.inflate(getContext(), R.layout.update_goal,null);
+                final AlertDialog dLog = new AlertDialog.Builder(getContext())
+                        .setView(dView)
+                        .setTitle("Update Pages Read")
+                        .setPositiveButton("Set", null)
+                        .setNegativeButton("Cancel", null)
+                        .create();
+
+                dLog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialog) {
+                        Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                        button.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View view) {
+                                EditText eGoalPrompt = dView.findViewById(R.id.user_input_update_goal);
+                                String goalInput = eGoalPrompt.getText().toString();
+                                if(goalInput.equals("")) {
+                                    Toast.makeText(getContext(), "No value was entered", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                else if(Integer.parseInt(goalInput) == 0){
+                                    Toast.makeText(getContext(), "Enter a non-zero value", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                int x = Integer.parseInt(goalInput);
+                                if(x < goalVal){
+                                    goalText.setText(getString(R.string.goal_progress_set, x, goalVal));
+                                }
+                                else{
+                                    goalText.setText(getString(R.string.goal_progress_done, x, goalVal));
+                                }
+                                dLog.dismiss();
+                            }
+                        });
+                    }
+                });
+                dLog.show();
+            }
+        });
+    }
 }
