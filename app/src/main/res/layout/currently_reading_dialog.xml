@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <EditText android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:fontFamily="sans-serif"
+        android:hint="@string/book_title"
+        android:id="@+id/edit_text_book_title_curr" app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
+        app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"/>
+
+    <EditText android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:fontFamily="sans-serif"
+        android:hint="@string/page_count"
+        android:id="@+id/edit_text_book_pages_curr"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_book_title_curr"
+        app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
+        app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+        android:inputType="number"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/date_started"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:id="@+id/curr_read_date_button"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_book_pages_curr" android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="8dp"
+        app:layout_constraintStart_toStartOf="parent" android:visibility="visible"/>
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/curr_read_ll_in_dialog"
+        android:visibility="gone"
+        android:paddingStart="4dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toTopOf="@+id/curr_read_date_button"
+        app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
+        app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp">
+
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="placeholder"
+            android:id="@+id/selected_curr_read_date"/>
+
+        <Button android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="@string/reselect"/>
+
+    </LinearLayout>
+
+    <TextView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_light"
+        android:text="@string/all_fields_except_book_title_are_optional"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/curr_read_date_button" app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="8dp"/>
+
+</android.support.constraint.ConstraintLayout>
