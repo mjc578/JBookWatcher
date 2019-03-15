@@ -26,4 +26,6 @@
     <string name="all_fields_except_book_title_are_optional">*All fields except book title are optional*</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="start_date">Start Date</string>
+    <string name="book_author">Book Author</string>
 </resources>

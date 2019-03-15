@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class BookListAdapter extends ArrayAdapter<Book> {
 
-    ArrayList<Book> bookList;
+    private ArrayList<Book> bookList;
 
     public BookListAdapter(Context context, ArrayList<Book> bookList){
         super(context, 0, bookList);

@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CurrentlyReadingFrag">
+    tools:context=".CurrentlyReadingFrag"
+    android:id="@+id/curr_read_frag">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:text="@string/empty_list"
+        android:gravity="center"
+        android:id="@+id/curr_list_text_view"/>
 
-</FrameLayout>
+    <ListView android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/curr_read_list_view"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/add_button"
+        android:layout_margin="16dp"
+        android:id="@+id/fab_curr_read"
+        />
+
+</RelativeLayout>
