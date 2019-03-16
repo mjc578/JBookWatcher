@@ -4,7 +4,7 @@ public class Book {
 
     private String bookTitle;
     private String author = null;
-    private int pageNum = 0;
+    private int pageNum = -1;
     private String startDate = null;
     private String endDate = null;
 

@@ -33,7 +33,7 @@ public class BookListAdapter extends ArrayAdapter<Book> {
         bookNameTV.setText(currBook.getBookTitle());
 
         TextView pageNumTV = listItemView.findViewById(R.id.collapsed_page_num);
-        if(currBook.getPageNum() != 0) {
+        if(currBook.getPageNum() != -1) {
             pageNumTV.setText(currBook.getPageNum() + " Pages");
         }
 
