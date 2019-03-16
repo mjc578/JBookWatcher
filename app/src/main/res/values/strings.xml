@@ -29,4 +29,6 @@
     <string name="start_date">Start Date</string>
     <string name="book_author">Book Author</string>
     <string name="move">Move</string>
+    <string name="your_to_read_list_is_currently_empty">Your To Read list is empty</string>
+    <string name="your_currently_reading_list_is_empty">Your Currently Reading list is empty</string>
 </resources>

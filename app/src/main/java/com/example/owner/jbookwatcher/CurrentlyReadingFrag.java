@@ -32,6 +32,7 @@ public class CurrentlyReadingFrag extends Fragment {
     private ArrayList<Book> bookList;
     private BookListAdapter bookAdapter;
     private ListView list;
+    private TextView noBooks;
 
     public CurrentlyReadingFrag() {
         // Required empty public constructor
@@ -49,6 +50,7 @@ public class CurrentlyReadingFrag extends Fragment {
         bookAdapter = new BookListAdapter(getContext(), bookList);
 
         list = crView.findViewById(R.id.curr_read_list_view);
+        noBooks = crView.findViewById(R.id.curr_list_text_view);
 
         setFabulousButton(crView);
         setOnListListener();
@@ -112,7 +114,7 @@ public class CurrentlyReadingFrag extends Fragment {
                                 }
                                 Book book = makeBook(enteredTitle, dcrView);
                                 bookList.add(book);
-                                crView.findViewById(R.id.curr_list_text_view).setVisibility(View.GONE);
+                                noBooks.setVisibility(View.GONE);
                                 list.setAdapter(bookAdapter);
 
                                 //Dismiss once everything is OK.
@@ -159,24 +161,25 @@ public class CurrentlyReadingFrag extends Fragment {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(view.findViewById(R.id.selected_curr_book_buttons).getVisibility() == View.GONE){
-                    view.findViewById(R.id.selected_curr_book_buttons).setVisibility(View.VISIBLE);
+                if(view.findViewById(R.id.selected_book_buttons).getVisibility() == View.GONE){
+                    view.findViewById(R.id.selected_book_buttons).setVisibility(View.VISIBLE);
 
                     setBookDeleteListener(view, position);
                     setBookEditListener(view, position);
+                    setMoveListener(view, position);
                 }
                 else{
-                    view.findViewById(R.id.selected_curr_book_buttons).setVisibility(View.GONE);
+                    view.findViewById(R.id.selected_book_buttons).setVisibility(View.GONE);
                 }
             }
         });
     }
 
-    private void setBookDeleteListener(View v, final int position){
+    private void setBookDeleteListener(final View v, final int position){
         TextView deleteText = v.findViewById(R.id.selected_book_delete);
         deleteText.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View vv) {
                 DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -184,6 +187,9 @@ public class CurrentlyReadingFrag extends Fragment {
                             case DialogInterface.BUTTON_POSITIVE:
                                 bookList.remove(position);
                                 list.setAdapter(bookAdapter);
+                                if(bookList.isEmpty()){
+                                    noBooks.setVisibility(View.VISIBLE);
+                                }
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:
@@ -193,7 +199,7 @@ public class CurrentlyReadingFrag extends Fragment {
                     }
                 };
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setMessage("Delete this archived game?").setPositiveButton("Yes", dialogListener)
+                builder.setMessage("Delete this book?").setPositiveButton("Yes", dialogListener)
                         .setNegativeButton("No", dialogListener).show();
             }
         });
@@ -220,7 +226,7 @@ public class CurrentlyReadingFrag extends Fragment {
                     EditText etPageNum = dcrView.findViewById(R.id.edit_text_book_pages_curr);
                     etPageNum.setText(currBook.getPageNum() + "");
                 }
-                EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_curr);
+                final EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_curr);
                 etBookTitle.setText(currBook.getBookTitle());
                 //TODO: FIX THE BROKEN DOUBLE CLICK ON DATE EDIT TEXT
                 dcrView.findViewById(R.id.edit_text_curr_read_start_date).setOnClickListener(new View.OnClickListener() {
@@ -238,7 +244,6 @@ public class CurrentlyReadingFrag extends Fragment {
 
                             @Override
                             public void onClick(View view) {
-                                EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_curr);
                                 String enteredTitle = etBookTitle.getText().toString();
                                 if (enteredTitle.equals("")) {
                                     Toast.makeText(getContext(), "No book title entered", Toast.LENGTH_SHORT).show();
@@ -256,6 +261,17 @@ public class CurrentlyReadingFrag extends Fragment {
                     }
                 });
                 dLog.show();
+            }
+        });
+    }
+
+    private void setMoveListener(final View view, final int position){
+        //view is the view of the list item
+        TextView moveButton = view.findViewById(R.id.selected_book_move);
+        moveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Implement this when you implement database!", Toast.LENGTH_SHORT).show();
             }
         });
     }

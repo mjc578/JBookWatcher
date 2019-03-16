@@ -36,13 +36,15 @@
                 android:id="@+id/collapsed_page_num"
                 android:layout_width="wrap_content"
                 android:layout_height="44dp"
-                android:layout_toEndOf="@id/collapsed_book_author"
                 android:layout_below="@id/collapsed_book_name"
+                android:layout_marginStart="-4dp"
+                android:layout_marginTop="0dp"
+                android:layout_toEndOf="@id/collapsed_book_author"
+                android:ellipsize="end"
                 android:gravity="top"
                 android:maxLines="1"
-                android:ellipsize="end"
                 android:paddingTop="4dp"
-                tools:text="2000 Pages" />
+                tools:text="8000 Pages" />
 
             <TextView
                 android:id="@+id/collapsed_book_author"
@@ -80,7 +82,7 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/selected_curr_book_buttons"
+        android:id="@+id/selected_book_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
