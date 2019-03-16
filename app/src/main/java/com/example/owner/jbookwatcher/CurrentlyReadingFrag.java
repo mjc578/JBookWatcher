@@ -46,13 +46,13 @@ public class CurrentlyReadingFrag extends Fragment {
 
         //TODO: gonna have to load books from database or whatever not this this erases it each load
         bookList = new ArrayList<Book>();
-        bookAdapter = new BookListAdapter(getContext(), null);
+        bookAdapter = new BookListAdapter(getContext(), bookList);
 
         list = crView.findViewById(R.id.curr_read_list_view);
 
         setFabulousButton(crView);
         setOnListListener(crView);
-        
+
         return crView;
     }
 
@@ -105,7 +105,7 @@ public class CurrentlyReadingFrag extends Fragment {
                                 }
                                 bookList.add(book);
                                 crView.findViewById(R.id.curr_list_text_view).setVisibility(View.GONE);
-                                list.setAdapter(new BookListAdapter(getContext(), bookList));
+                                list.setAdapter(bookAdapter);
 
                                 //Dismiss once everything is OK.
                                 dLog.dismiss();
@@ -154,7 +154,7 @@ public class CurrentlyReadingFrag extends Fragment {
                 if(view.findViewById(R.id.selected_curr_book_buttons).getVisibility() == View.GONE){
                     view.findViewById(R.id.selected_curr_book_buttons).setVisibility(View.VISIBLE);
 
-                    //setDeleteListener(view, position);
+                    setBookDeleteListener(view, position);
                     //setPlayListener(view, position);
                 }
                 else{
@@ -162,5 +162,33 @@ public class CurrentlyReadingFrag extends Fragment {
                 }
             }
         });
+    }
+
+    private void setBookDeleteListener(View v, final int position){
+        TextView deleteText = v.findViewById(R.id.selected_book_delete);
+        deleteText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                                bookList.remove(position);
+                                list.setAdapter(bookAdapter);
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+
+                                break;
+                        }
+                    }
+                };
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setMessage("Delete this archived game?").setPositiveButton("Yes", dialogListener)
+                        .setNegativeButton("No", dialogListener).show();
+            }
+        });
+
     }
 }
