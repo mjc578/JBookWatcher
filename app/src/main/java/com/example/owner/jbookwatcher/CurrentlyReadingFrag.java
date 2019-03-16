@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -50,6 +51,8 @@ public class CurrentlyReadingFrag extends Fragment {
         list = crView.findViewById(R.id.curr_read_list_view);
 
         setFabulousButton(crView);
+        setOnListListener(crView);
+        
         return crView;
     }
 
@@ -140,6 +143,23 @@ public class CurrentlyReadingFrag extends Fragment {
                 new DatePickerDialog(getContext(), date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+    }
+
+    private void setOnListListener(View crView){
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(view.findViewById(R.id.selected_curr_book_buttons).getVisibility() == View.GONE){
+                    view.findViewById(R.id.selected_curr_book_buttons).setVisibility(View.VISIBLE);
+
+                    //setDeleteListener(view, position);
+                    //setPlayListener(view, position);
+                }
+                else{
+                    view.findViewById(R.id.selected_curr_book_buttons).setVisibility(View.GONE);
+                }
             }
         });
     }
