@@ -20,7 +20,7 @@
     <string name="empty_list">This list is currently empty</string>
     <string name="enter_book_info">Enter book information</string>
     <string name="book_title">Book Title</string>
-    <string name="date_started">Select Date Started (optional)</string>
+    <string name="date_started">Select Date Started</string>
     <string name="page_count">Page Count</string>
     <string name="reselect">Reselect</string>
     <string name="all_fields_except_book_title_are_optional">*All fields except book title are optional*</string>

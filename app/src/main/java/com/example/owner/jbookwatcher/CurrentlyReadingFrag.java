@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,8 @@ import java.util.Locale;
 public class CurrentlyReadingFrag extends Fragment {
 
     private ArrayList<Book> bookList;
+    private BookListAdapter bookAdapter;
+    private ListView list;
 
     public CurrentlyReadingFrag() {
         // Required empty public constructor
@@ -39,15 +42,22 @@ public class CurrentlyReadingFrag extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View crView = inflater.inflate(R.layout.fragment_currently_reading, container, false);
+
+        //TODO: gonna have to load books from database or whatever not this this erases it each load
+        bookList = new ArrayList<Book>();
+        bookAdapter = new BookListAdapter(getContext(), null);
+
+        list = crView.findViewById(R.id.curr_read_list_view);
+
         setFabulousButton(crView);
         return crView;
     }
 
-    private void setFabulousButton(final View crView){
+    private void setFabulousButton(final View crView) {
         crView.findViewById(R.id.fab_curr_read).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final View dcrView = View.inflate(getContext(), R.layout.currently_reading_dialog,null);
+                final View dcrView = View.inflate(getContext(), R.layout.currently_reading_dialog, null);
                 //TODO: FIX THE BROKEN DOUBLE CLICK ON DATE EDIT TEXT
                 dcrView.findViewById(R.id.edit_text_curr_read_start_date).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -65,23 +75,34 @@ public class CurrentlyReadingFrag extends Fragment {
                 dLog.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
                     public void onShow(DialogInterface dialog) {
-                        Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                        final Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
                         button.setOnClickListener(new View.OnClickListener() {
 
                             @Override
                             public void onClick(View view) {
-                                TextView entTextTV = dcrView.findViewById(R.id.edit_text_book_title_curr);
-                                String enteredTitle = entTextTV.getText().toString();
-                                //TODO need to consider the other book fields...
-                                if(enteredTitle.equals("")){
+                                EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_curr);
+                                String enteredTitle = etBookTitle.getText().toString();
+                                if (enteredTitle.equals("")) {
                                     Toast.makeText(getContext(), "No book title entered", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                                 Book book = new Book(enteredTitle);
-                                //TODO add other fields here
-
+                                //check for other fields
+                                EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_curr);
+                                if(!etAuthor.getText().toString().equals("")){
+                                    book.setAuthor(etAuthor.getText().toString());
+                                }
+                                EditText etPageNum = dcrView.findViewById(R.id.edit_text_book_pages_curr);
+                                if(!etPageNum.getText().toString().equals("")){
+                                    book.setPageNum(Integer.parseInt(etPageNum.getText().toString()));
+                                }
+                                EditText etStartDate = dcrView.findViewById(R.id.edit_text_curr_read_start_date);
+                                if(!etStartDate.getText().toString().equals("Start Date")){
+                                    book.setStartDate(etStartDate.getText().toString());
+                                }
                                 bookList.add(book);
                                 crView.findViewById(R.id.curr_list_text_view).setVisibility(View.GONE);
+                                list.setAdapter(new BookListAdapter(getContext(), bookList));
 
                                 //Dismiss once everything is OK.
                                 dLog.dismiss();
@@ -94,10 +115,10 @@ public class CurrentlyReadingFrag extends Fragment {
         });
     }
 
-    private void datePicker(final View dcrView){
+    private void datePicker(final View dcrView) {
         final Calendar myCalendar = Calendar.getInstance();
 
-        final EditText dateButton = dcrView.findViewById(R.id.edit_text_curr_read_start_date);
+        final EditText dateET = dcrView.findViewById(R.id.edit_text_curr_read_start_date);
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
             @Override
@@ -106,22 +127,20 @@ public class CurrentlyReadingFrag extends Fragment {
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                String myFormat = "MM/dd/yy"; //In which you need put here
+                String myFormat = "MM/dd/yy";
                 SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-                dateButton.setText(sdf.format(myCalendar.getTime()));
+                dateET.setText(sdf.format(myCalendar.getTime()));
             }
 
         };
 
-        dateButton.setOnClickListener(new View.OnClickListener() {
+        dateET.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 new DatePickerDialog(getContext(), date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
     }
-
 }
