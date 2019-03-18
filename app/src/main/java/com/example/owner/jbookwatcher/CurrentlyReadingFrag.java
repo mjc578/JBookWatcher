@@ -79,7 +79,7 @@ public class CurrentlyReadingFrag extends Fragment {
             book.setPageNum(Integer.parseInt(etPageNum.getText().toString()));
         }
         EditText etStartDate = dcrView.findViewById(R.id.edit_text_curr_read_start_date);
-        if (!etStartDate.getText().toString().equals("Start Date")) {
+        if (!etStartDate.getText().toString().equals("")) {
             book.setStartDate(etStartDate.getText().toString());
         }
         return book;

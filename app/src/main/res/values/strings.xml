@@ -31,4 +31,6 @@
     <string name="move">Move</string>
     <string name="your_to_read_list_is_currently_empty">Your To Read list is empty</string>
     <string name="your_currently_reading_list_is_empty">Your Currently Reading list is empty</string>
+    <string name="end_date">Finish Date</string>
+    <string name="your_finished_reading_list_is_empty">Your Finished Reading list is empty</string>
 </resources>
