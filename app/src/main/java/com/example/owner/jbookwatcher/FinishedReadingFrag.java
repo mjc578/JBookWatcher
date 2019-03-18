@@ -89,42 +89,25 @@ public class FinishedReadingFrag extends Fragment {
         }
         return book;
     }
-    
-    //returns false if there is an inconsistency
-    private boolean checkDates(View dcrView){
-        EditText set = dcrView.findViewById(R.id.edit_text_finished_read_start_date);
-        EditText fet = dcrView.findViewById(R.id.edit_text_finished_read_finish_date);
-        if(!ul.editHasText(set) || !ul.editHasText(fet)){
-            return false;
-        }
-        //TODO: do this with calendar instances instead since comparing years this way
-        //TODO: can easily lead to inconsistencies in my inconsistency checker! BAD
-        String[] sDate = set.getText().toString().split("/");
-        String[] fDate = fet.getText().toString().split("/");
-        if(Integer.parseInt(sDate[2]) <= Integer.parseInt(fDate[2])){
-            if(Integer.parseInt(sDate[1]) <= Integer.parseInt(fDate[1])){
-                return Integer.parseInt(sDate[0]) > Integer.parseInt(fDate[0]);
-            }
-        }
-        return true;
-    }
 
     private void setFabulousButton(final View crView) {
         crView.findViewById(R.id.fab_finished_read).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final View dcrView = View.inflate(getContext(), R.layout.finished_reading_dialog, null);
+                final EditText etStartDate = dcrView.findViewById(R.id.edit_text_finished_read_start_date);
+                final EditText etFinishDate = dcrView.findViewById(R.id.edit_text_finished_read_finish_date);
                 //TODO: FIX THE BROKEN DOUBLE CLICK ON DATE EDIT TEXT
-                dcrView.findViewById(R.id.edit_text_finished_read_start_date).setOnClickListener(new View.OnClickListener() {
+                etStartDate.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        datePicker(dcrView, R.id.edit_text_finished_read_start_date);
+                        datePicker(dcrView, etStartDate);
                     }
                 });
-                dcrView.findViewById(R.id.edit_text_finished_read_finish_date).setOnClickListener(new View.OnClickListener() {
+                etFinishDate.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        datePicker(dcrView, R.id.edit_text_finished_read_finish_date);
+                        datePicker(dcrView, etFinishDate);
                     }
                 });
                 final AlertDialog dLog = makeAlertDLog(dcrView, "Enter Book Info");
@@ -143,7 +126,7 @@ public class FinishedReadingFrag extends Fragment {
                                     return;
                                 }
                                 //check for date consistency if necessary
-                                if(checkDates(dcrView)){
+                                if(ul.checkDates(etStartDate, etFinishDate)){
                                     Toast.makeText(getContext(), "Cannot have finish date before start date", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
@@ -152,7 +135,6 @@ public class FinishedReadingFrag extends Fragment {
                                 noBooks.setVisibility(View.GONE);
                                 list.setAdapter(bookAdapter);
 
-                                //Dismiss once everything is OK.
                                 dLog.dismiss();
                             }
                         });
@@ -163,10 +145,8 @@ public class FinishedReadingFrag extends Fragment {
         });
     }
 
-    private void datePicker(final View dcrView, int etID) {
+    private void datePicker(final View dcrView, final EditText et) {
         final Calendar myCalendar = Calendar.getInstance();
-
-        final EditText dateET = dcrView.findViewById(etID);
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
             @Override
@@ -177,12 +157,12 @@ public class FinishedReadingFrag extends Fragment {
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 String myFormat = "MM/dd/yy";
                 SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-                dateET.setText(sdf.format(myCalendar.getTime()));
+                et.setText(sdf.format(myCalendar.getTime()));
             }
 
         };
 
-        dateET.setOnClickListener(new View.OnClickListener() {
+        et.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new DatePickerDialog(getContext(), date, myCalendar
@@ -248,36 +228,37 @@ public class FinishedReadingFrag extends Fragment {
             @Override
             public void onClick(View vv) {
                 final View dcrView = View.inflate(getContext(), R.layout.finished_reading_dialog, null);
+                final EditText etStartDate = dcrView.findViewById(R.id.edit_text_finished_read_start_date);
+                final EditText etFinishDate = dcrView.findViewById(R.id.edit_text_finished_read_finish_date);
+                final EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_finished);
+                final EditText etPageNum = dcrView.findViewById(R.id.edit_text_book_pages_finished);
+                final EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_finished);
+
                 //fill edit texts with current data
                 if(currBook.getStartDate() != null){
-                    EditText etStartDate = dcrView.findViewById(R.id.edit_text_finished_read_start_date);
                     etStartDate.setText(currBook.getStartDate());
                 }
                 if(currBook.getEndDate() != null){
-                    EditText etStartDate = dcrView.findViewById(R.id.edit_text_finished_read_finish_date);
-                    etStartDate.setText(currBook.getEndDate());
+                    etFinishDate.setText(currBook.getEndDate());
                 }
                 if(currBook.getAuthor() != null){
-                    EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_finished);
                     etAuthor.setText(currBook.getAuthor());
                 }
                 if(currBook.getPageNum() != -1){
-                    EditText etPageNum = dcrView.findViewById(R.id.edit_text_book_pages_finished);
                     etPageNum.setText(currBook.getPageNum() + "");
                 }
-                final EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_finished);
                 etBookTitle.setText(currBook.getBookTitle());
                 //TODO: FIX THE BROKEN DOUBLE CLICK ON DATE EDIT TEXT
-                dcrView.findViewById(R.id.edit_text_finished_read_start_date).setOnClickListener(new View.OnClickListener() {
+                etStartDate.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        datePicker(dcrView, R.id.edit_text_finished_read_start_date);
+                        datePicker(dcrView, etStartDate);
                     }
                 });
-                dcrView.findViewById(R.id.edit_text_finished_read_finish_date).setOnClickListener(new View.OnClickListener() {
+                etFinishDate.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        datePicker(dcrView, R.id.edit_text_finished_read_start_date);
+                        datePicker(dcrView, etFinishDate);
                     }
                 });
                 final AlertDialog dLog = makeAlertDLog(dcrView, "Edit Book Info");
@@ -295,7 +276,7 @@ public class FinishedReadingFrag extends Fragment {
                                     return;
                                 }
                                 //if both dates are there, check there is no inconsistency
-                                if(checkDates(dcrView)){
+                                if(ul.checkDates(etStartDate, etFinishDate)){
                                     Toast.makeText(getContext(), "Cannot have finish date before start date", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
