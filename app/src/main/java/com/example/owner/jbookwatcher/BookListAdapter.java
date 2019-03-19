@@ -44,12 +44,14 @@ public class BookListAdapter extends ArrayAdapter<Book> {
 
         TextView startDateTV = listItemView.findViewById(R.id.collapsed_book_start_date);
         if(currBook.getStartDate() != null){
-            startDateTV.setText(currBook.getStartDate());
+            String[] sDate = currBook.getStartDate().split("/");
+            startDateTV.setText(sDate[0] + "/" + sDate[1] + "/" + sDate[2].substring(2));
         }
 
         TextView endDateTV = listItemView.findViewById(R.id.collapsed_book_end_date);
         if(currBook.getEndDate() != null){
-            endDateTV.setText(currBook.getEndDate());
+            String[] fDate = currBook.getEndDate().split("/");
+            endDateTV.setText(fDate[0] + "/" + fDate[1] + "/" + fDate[2].substring(2));
         }
 
         return listItemView;
