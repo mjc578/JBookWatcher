@@ -9,8 +9,18 @@ public class Book {
     private String startDate = null;
     private String endDate = null;
 
+    //basic constructor
     public Book(String bookTitle, int tableIndicator){
         this.bookTitle = bookTitle;
+    }
+
+    //full constructor
+    public Book(String bookTitle, String author, int pageNum, String startDate, String endDate, int listIndicator){
+        this.bookTitle = bookTitle;
+        this.author = author;
+        this.pageNum = pageNum;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public String getBookTitle(){

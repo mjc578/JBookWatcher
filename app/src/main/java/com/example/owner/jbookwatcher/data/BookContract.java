@@ -7,7 +7,7 @@ public final class BookContract {
     //prohibit class instantiation
     private BookContract(){}
 
-    public static final class bookEntry implements BaseColumns{
+    public static final class BookEntry implements BaseColumns{
 
         public static final String TABLE_NAME = "book_entry";
         public static final String _ID = BaseColumns._ID;
