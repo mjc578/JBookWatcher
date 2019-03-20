@@ -3,12 +3,13 @@ package com.example.owner.jbookwatcher;
 public class Book {
 
     private String bookTitle;
+    private int listIndicator;
     private String author = null;
     private int pageNum = -1;
     private String startDate = null;
     private String endDate = null;
 
-    public Book(String bookTitle){
+    public Book(String bookTitle, int tableIndicator){
         this.bookTitle = bookTitle;
     }
 
@@ -50,5 +51,13 @@ public class Book {
 
     public void setEndDate(String endDate){
         this.endDate = endDate;
+    }
+
+    public int getListIndicator(){
+        return listIndicator;
+    }
+
+    public void setListIndicator(int listIndicator){
+        this.listIndicator = listIndicator;
     }
 }

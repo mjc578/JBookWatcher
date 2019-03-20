@@ -69,7 +69,7 @@ public class FinishedReadingFrag extends Fragment {
     }
 
     public Book makeBook(String title, View dcrView){
-        Book book = new Book(title);
+        Book book = new Book(title, 1);
         //check for other fields
         EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_finished);
         if (ul.editHasText(etAuthor)) {
@@ -206,7 +206,6 @@ public class FinishedReadingFrag extends Fragment {
                 final EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_finished);
                 final EditText etPageNum = dcrView.findViewById(R.id.edit_text_book_pages_finished);
                 final EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_finished);
-
                 //fill edit texts with current data
                 if(currBook.getStartDate() != null){
                     etStartDate.setText(currBook.getStartDate());
@@ -279,6 +278,4 @@ public class FinishedReadingFrag extends Fragment {
             }
         });
     }
-
-
 }

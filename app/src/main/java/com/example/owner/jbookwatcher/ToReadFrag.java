@@ -62,7 +62,7 @@ public class ToReadFrag extends Fragment {
     }
 
     public Book makeBook(String title, View dcrView){
-        Book book = new Book(title);
+        Book book = new Book(title, 3);
         //check for other fields
         EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_to_read);
         if (!etAuthor.getText().toString().equals("")) {
