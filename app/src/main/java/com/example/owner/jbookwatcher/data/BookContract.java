@@ -10,7 +10,6 @@ public final class BookContract {
     public static final class BookEntry implements BaseColumns{
 
         public static final String TABLE_NAME = "book_entry";
-        public static final String _ID = BaseColumns._ID;
         public static final String COLUMN_BOOK_NAME = "name";
         public static final String COLUMN_BOOK_AUTHOR = "author";
         public static final String COLUMN_PAGE_NUMBER = "page_count";

@@ -33,6 +33,7 @@ public class CurrentlyReadingFrag extends Fragment {
     private BookListAdapter bookAdapter;
     private ListView list;
     private TextView noBooks;
+    private UtilityLibrary ul;
 
     public CurrentlyReadingFrag() {
         // Required empty public constructor
@@ -44,6 +45,7 @@ public class CurrentlyReadingFrag extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View crView = inflater.inflate(R.layout.fragment_currently_reading, container, false);
+        ul = new UtilityLibrary();
 
         //TODO: gonna have to load books from database or whatever not this this erases it each load
         bookList = new ArrayList<>();
@@ -68,7 +70,7 @@ public class CurrentlyReadingFrag extends Fragment {
     }
 
     public Book makeBook(String title, View dcrView){
-        Book book = new Book(title, 2);
+        Book book = new Book(title, 0);
         //check for other fields
         EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_curr);
         if (!etAuthor.getText().toString().equals("")) {
@@ -107,12 +109,12 @@ public class CurrentlyReadingFrag extends Fragment {
                             @Override
                             public void onClick(View view) {
                                 EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_curr);
-                                String enteredTitle = etBookTitle.getText().toString();
-                                if (enteredTitle.equals("")) {
-                                    Toast.makeText(getContext(), "No book title entered", Toast.LENGTH_SHORT).show();
+                                EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_curr);
+                                if (!ul.editHasText(etBookTitle) || !ul.editHasText(etAuthor)) {
+                                    Toast.makeText(getContext(), R.string.no_titleauth, Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                Book book = makeBook(enteredTitle, dcrView);
+                                Book book = makeBook(etBookTitle.getText().toString(), dcrView);
                                 bookList.add(book);
                                 noBooks.setVisibility(View.GONE);
                                 list.setAdapter(bookAdapter);
@@ -213,20 +215,20 @@ public class CurrentlyReadingFrag extends Fragment {
             @Override
             public void onClick(View vv) {
                 final View dcrView = View.inflate(getContext(), R.layout.currently_reading_dialog, null);
+                final EditText etStartDate = dcrView.findViewById(R.id.edit_text_curr_read_start_date);
+                final EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_curr);
+                final EditText etPageNum = dcrView.findViewById(R.id.edit_text_book_pages_curr);
+                final EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_curr);
                 //fill edit texts with current data
                 if(currBook.getStartDate() != null){
-                    EditText etStartDate = dcrView.findViewById(R.id.edit_text_curr_read_start_date);
                     etStartDate.setText(currBook.getStartDate());
                 }
                 if(currBook.getAuthor() != null){
-                    EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_curr);
                     etAuthor.setText(currBook.getAuthor());
                 }
                 if(currBook.getPageNum() != -1){
-                    EditText etPageNum = dcrView.findViewById(R.id.edit_text_book_pages_curr);
                     etPageNum.setText(currBook.getPageNum() + "");
                 }
-                final EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_curr);
                 etBookTitle.setText(currBook.getBookTitle());
                 //TODO: FIX THE BROKEN DOUBLE CLICK ON DATE EDIT TEXT
                 dcrView.findViewById(R.id.edit_text_curr_read_start_date).setOnClickListener(new View.OnClickListener() {
@@ -244,9 +246,8 @@ public class CurrentlyReadingFrag extends Fragment {
 
                             @Override
                             public void onClick(View view) {
-                                String enteredTitle = etBookTitle.getText().toString();
-                                if (enteredTitle.equals("")) {
-                                    Toast.makeText(getContext(), "No book title entered", Toast.LENGTH_SHORT).show();
+                                if (!ul.editHasText(etBookTitle) || !ul.editHasText(etAuthor)) {
+                                    Toast.makeText(getContext(), R.string.no_titleauth, Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                                 bookList.remove(currBook);

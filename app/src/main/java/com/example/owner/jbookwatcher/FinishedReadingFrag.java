@@ -49,18 +49,18 @@ public class FinishedReadingFrag extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View crView = inflater.inflate(R.layout.fragment_finished_reading, container, false);
-
-        //TODO: gonna have to load books from database or whatever not this this erases it each time it loads
-        dbHelper = new BookDbHelper(getContext());
-
-        bookList = dbHelper.getListEntries(1);
-
-        bookAdapter = new BookListAdapter(getContext(), bookList);
         ul = new UtilityLibrary();
+
+        //instance our database
+        dbHelper = new BookDbHelper(getContext());
+        //load list of books that belong to this list category
+        bookList = dbHelper.getListEntries(1);
+        bookAdapter = new BookListAdapter(getContext(), bookList);
 
         list = crView.findViewById(R.id.finished_read_list_view);
         noBooks = crView.findViewById(R.id.finished_list_text_view);
 
+        //set list adapter on book list if there are any in db
         if(!bookList.isEmpty()){
             noBooks.setVisibility(View.GONE);
             list.setAdapter(bookAdapter);
@@ -140,9 +140,9 @@ public class FinishedReadingFrag extends Fragment {
                             @Override
                             public void onClick(View view) {
                                 EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_finished);
-                                String enteredTitle = etBookTitle.getText().toString();
-                                if (enteredTitle.equals("")) {
-                                    Toast.makeText(getContext(), "No book title entered", Toast.LENGTH_SHORT).show();
+                                EditText etBookAuthor = dcrView.findViewById(R.id.edit_text_author_finished);
+                                if (!ul.editHasText(etBookTitle) || !ul.editHasText(etBookAuthor)) {
+                                    Toast.makeText(getContext(), R.string.no_titleauth, Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                                 //check for date consistency if necessary
@@ -150,7 +150,7 @@ public class FinishedReadingFrag extends Fragment {
                                     Toast.makeText(getContext(), "Cannot have finish date before start date", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                Book book = makeBook(enteredTitle, dcrView);
+                                Book book = makeBook(etBookAuthor.getText().toString(), dcrView);
                                 bookList.add(book);
                                 dbHelper.addBook(book);
                                 dbHelper.printDbToLog();
@@ -171,6 +171,10 @@ public class FinishedReadingFrag extends Fragment {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                for(int i = 0; i < list.getCount(); i++){
+                    View v = list.getChildAt(i);
+                    v.findViewById(R.id.selected_book_buttons).setVisibility(View.GONE);
+                }
                 if(view.findViewById(R.id.selected_book_buttons).getVisibility() == View.GONE){
                     view.findViewById(R.id.selected_book_buttons).setVisibility(View.VISIBLE);
 
@@ -264,9 +268,8 @@ public class FinishedReadingFrag extends Fragment {
 
                             @Override
                             public void onClick(View view) {
-                                String enteredTitle = etBookTitle.getText().toString();
-                                if (enteredTitle.equals("")) {
-                                    Toast.makeText(getContext(), "No book title entered", Toast.LENGTH_SHORT).show();
+                                if (!ul.editHasText(etBookTitle) || !ul.editHasText(etAuthor)) {
+                                    Toast.makeText(getContext(), R.string.no_titleauth, Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                                 //if both dates are there, check there is no inconsistency
@@ -274,6 +277,7 @@ public class FinishedReadingFrag extends Fragment {
                                     Toast.makeText(getContext(), "Cannot have finish date before start date", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
+                                //TODO: you should be updating not deleting and re inserting
                                 bookList.remove(currBook);
                                 Book book = makeBook(currBook.getBookTitle(), dcrView);
                                 bookList.add(book);

@@ -21,13 +21,13 @@ public class BookDbHelper extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + BookEntry.TABLE_NAME + " (" +
-                    BookEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     BookEntry.COLUMN_BOOK_NAME + " TEXT," +
                     BookEntry.COLUMN_BOOK_AUTHOR + " TEXT," +
                     BookEntry.COLUMN_PAGE_NUMBER + " INTEGER," +
                     BookEntry.COLUMN_DATE_STARTED + " TEXT," +
                     BookEntry.COLUMN_DATE_FINISHED + " TEXT," +
-                    BookEntry.COLUMN_LIST_INDICATOR + ");";
+                    BookEntry.COLUMN_LIST_INDICATOR + " INTEGER," +
+                    "PRIMARY KEY (" + BookEntry.COLUMN_BOOK_NAME + ", " + BookEntry.COLUMN_BOOK_AUTHOR + "));";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + BookEntry.TABLE_NAME;
@@ -101,7 +101,11 @@ public class BookDbHelper extends SQLiteOpenHelper {
         c.close();
     }
 
-    public void deleteBook(){
+    public void deleteBook(String bookTitle, String bookAuthor){
+
+    }
+
+    public void updateBook(){
 
     }
 

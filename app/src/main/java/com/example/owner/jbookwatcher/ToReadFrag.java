@@ -27,6 +27,7 @@ public class ToReadFrag extends Fragment {
     BookListAdapter bookAdapter;
     ListView list;
     TextView noBooks;
+    UtilityLibrary ul;
 
     public ToReadFrag() {
         // Required empty public constructor
@@ -42,6 +43,7 @@ public class ToReadFrag extends Fragment {
         //TODO: gonna have to load books from database or whatever not this this erases it each load
         bookList = new ArrayList<>();
         bookAdapter = new BookListAdapter(getContext(), bookList);
+        ul = new UtilityLibrary();
 
         list = crView.findViewById(R.id.to_read_list_view);
         noBooks = crView.findViewById(R.id.to_read_list_text_view);
@@ -62,7 +64,7 @@ public class ToReadFrag extends Fragment {
     }
 
     public Book makeBook(String title, View dcrView){
-        Book book = new Book(title, 3);
+        Book book = new Book(title, 2);
         //check for other fields
         EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_to_read);
         if (!etAuthor.getText().toString().equals("")) {
@@ -90,12 +92,12 @@ public class ToReadFrag extends Fragment {
                             @Override
                             public void onClick(View view) {
                                 EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_to_read);
-                                String enteredTitle = etBookTitle.getText().toString();
-                                if (enteredTitle.equals("")) {
-                                    Toast.makeText(getContext(), "No book title entered", Toast.LENGTH_SHORT).show();
+                                EditText etBookAuthor = dcrView.findViewById(R.id.edit_text_author_to_read);
+                                if (!ul.editHasText(etBookTitle) || !ul.editHasText(etBookAuthor)) {
+                                    Toast.makeText(getContext(), R.string.no_titleauth, Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                Book book = makeBook(enteredTitle, dcrView);
+                                Book book = makeBook(etBookTitle.getText().toString(), dcrView);
                                 bookList.add(book);
                                 noBooks.setVisibility(View.GONE);
                                 list.setAdapter(bookAdapter);
@@ -166,16 +168,16 @@ public class ToReadFrag extends Fragment {
             @Override
             public void onClick(View vv) {
                 final View dcrView = View.inflate(getContext(), R.layout.to_read_dialog, null);
+                final EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_to_read);
+                final EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_to_read);
+                final EditText etPageNum = dcrView.findViewById(R.id.edit_text_book_pages_to_read);
                 //fill edit texts with current data
                 if(currBook.getAuthor() != null){
-                    EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_to_read);
                     etAuthor.setText(currBook.getAuthor());
                 }
                 if(currBook.getPageNum() != -1){
-                    EditText etPageNum = dcrView.findViewById(R.id.edit_text_book_pages_to_read);
                     etPageNum.setText(currBook.getPageNum() + "");
                 }
-                final EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_to_read);
                 etBookTitle.setText(currBook.getBookTitle());
                 final AlertDialog dLog = makeAlertDLog(dcrView, "Edit Book Info");
                 dLog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -186,11 +188,11 @@ public class ToReadFrag extends Fragment {
 
                             @Override
                             public void onClick(View view) {
-                                String enteredTitle = etBookTitle.getText().toString();
-                                if (enteredTitle.equals("")) {
-                                    Toast.makeText(getContext(), "No book title entered", Toast.LENGTH_SHORT).show();
+                                if (!ul.editHasText(etBookTitle) || !ul.editHasText(etAuthor)) {
+                                    Toast.makeText(getContext(), R.string.no_titleauth, Toast.LENGTH_SHORT).show();
                                     return;
                                 }
+                                //TODO: need to update rather than remove and reinsert
                                 bookList.remove(currBook);
                                 Book book = makeBook(currBook.getBookTitle(), dcrView);
                                 bookList.add(book);
