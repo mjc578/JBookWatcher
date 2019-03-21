@@ -4,8 +4,10 @@ package com.example.owner.jbookwatcher;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.owner.jbookwatcher.data.BookDbHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +37,7 @@ public class FinishedReadingFrag extends Fragment {
     private ListView list;
     private TextView noBooks;
     private UtilityLibrary ul;
+    private BookDbHelper dbHelper;
 
     public FinishedReadingFrag() {
         // Required empty public constructor
@@ -46,17 +51,32 @@ public class FinishedReadingFrag extends Fragment {
         View crView = inflater.inflate(R.layout.fragment_finished_reading, container, false);
 
         //TODO: gonna have to load books from database or whatever not this this erases it each time it loads
-        bookList = new ArrayList<>();
+        dbHelper = new BookDbHelper(getContext());
+
+        bookList = dbHelper.getListEntries(1);
+
         bookAdapter = new BookListAdapter(getContext(), bookList);
         ul = new UtilityLibrary();
 
         list = crView.findViewById(R.id.finished_read_list_view);
         noBooks = crView.findViewById(R.id.finished_list_text_view);
 
+        if(!bookList.isEmpty()){
+            noBooks.setVisibility(View.GONE);
+            list.setAdapter(bookAdapter);
+            list.setVisibility(View.VISIBLE);
+        }
+
         setFabulousButton(crView);
         setOnListListener();
 
         return crView;
+    }
+
+    @Override
+    public void onDestroy() {
+        dbHelper.close();
+        super.onDestroy();
     }
 
     public AlertDialog makeAlertDLog(View v, String title){
@@ -132,6 +152,8 @@ public class FinishedReadingFrag extends Fragment {
                                 }
                                 Book book = makeBook(enteredTitle, dcrView);
                                 bookList.add(book);
+                                dbHelper.addBook(book);
+                                dbHelper.printDbToLog();
                                 noBooks.setVisibility(View.GONE);
                                 list.setAdapter(bookAdapter);
 

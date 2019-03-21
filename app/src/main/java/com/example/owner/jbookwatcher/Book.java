@@ -10,8 +10,9 @@ public class Book {
     private String endDate = null;
 
     //basic constructor
-    public Book(String bookTitle, int tableIndicator){
+    public Book(String bookTitle, int listIndicator){
         this.bookTitle = bookTitle;
+        this.listIndicator = listIndicator;
     }
 
     //full constructor

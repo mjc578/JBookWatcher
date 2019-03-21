@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.owner.jbookwatcher.Book;
 import com.example.owner.jbookwatcher.data.BookContract.BookEntry;
@@ -51,7 +52,7 @@ public class BookDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + BookEntry.TABLE_NAME +
                 " WHERE " + BookEntry.COLUMN_LIST_INDICATOR +
-                "='" + listIndicator;
+                "=" + listIndicator;
 
         Cursor c = db.rawQuery(query, null);
         ArrayList<Book> list = new ArrayList<>();
@@ -79,7 +80,25 @@ public class BookDbHelper extends SQLiteOpenHelper {
         vals.put(BookEntry.COLUMN_DATE_STARTED, book.getStartDate());
         vals.put(BookEntry.COLUMN_DATE_FINISHED,book.getEndDate());
         vals.put(BookEntry.COLUMN_LIST_INDICATOR, book.getListIndicator());
-        long id = db.insert(DATABASE_NAME, null, vals);
+        db.insert(BookEntry.TABLE_NAME, null, vals);
+    }
+
+    public void printDbToLog(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + BookEntry.TABLE_NAME;
+        Cursor c = db.rawQuery(query, null);
+        if(c.getCount() == 0){
+            Log.e("DATABASE STATUS", "EMPTY");
+        }
+        else{
+            Log.e("DATABASE STATUS", "POPULATED");
+            for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()){
+                Log.e("Book name", c.getString(c.getColumnIndexOrThrow(BookEntry.COLUMN_BOOK_NAME)));
+                Log.e("Corresponding List", c.getInt(c.getColumnIndexOrThrow(BookEntry.COLUMN_LIST_INDICATOR)) + "");
+            }
+            Log.e("DATABASE STATUS", "END OF ENTRIES");
+        }
+        c.close();
     }
 
     public void deleteBook(){
