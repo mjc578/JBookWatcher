@@ -13,6 +13,7 @@ import com.example.owner.jbookwatcher.data.BookContract.BookEntry;
 
 import java.util.ArrayList;
 
+//TODO maybe support comparisons by lowercase
 
 public class BookDbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.

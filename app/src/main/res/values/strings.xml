@@ -34,4 +34,5 @@
     <string name="end_date">Finish Date</string>
     <string name="your_finished_reading_list_is_empty">Your Finished Reading list is empty</string>
     <string name="no_titleauth">No title/author entered</string>
+    <string name="book_in_db">Book already exists in one of your lists</string>
 </resources>

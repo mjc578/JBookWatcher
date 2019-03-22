@@ -18,6 +18,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.owner.jbookwatcher.data.BookDbHelper;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,11 +31,13 @@ import java.util.Locale;
  */
 public class CurrentlyReadingFrag extends Fragment {
 
+    private final int LIST_IDENT = 0;
     private ArrayList<Book> bookList;
     private BookListAdapter bookAdapter;
     private ListView list;
     private TextView noBooks;
     private UtilityLibrary ul;
+    private BookDbHelper dbHelper;
 
     public CurrentlyReadingFrag() {
         // Required empty public constructor
@@ -47,12 +51,21 @@ public class CurrentlyReadingFrag extends Fragment {
         View crView = inflater.inflate(R.layout.fragment_currently_reading, container, false);
         ul = new UtilityLibrary();
 
-        //TODO: gonna have to load books from database or whatever not this this erases it each load
-        bookList = new ArrayList<>();
+        //instance our database
+        dbHelper = new BookDbHelper(getContext());
+        //load list of books that belong to this list category
+        bookList = dbHelper.getListEntries(LIST_IDENT);
         bookAdapter = new BookListAdapter(getContext(), bookList);
 
         list = crView.findViewById(R.id.curr_read_list_view);
         noBooks = crView.findViewById(R.id.curr_list_text_view);
+
+        //set list adapter on book list if there are any in db
+        if(!bookList.isEmpty()){
+            noBooks.setVisibility(View.GONE);
+            list.setAdapter(bookAdapter);
+            list.setVisibility(View.VISIBLE);
+        }
 
         setFabulousButton(crView);
         setOnListListener();
@@ -70,7 +83,7 @@ public class CurrentlyReadingFrag extends Fragment {
     }
 
     public Book makeBook(String title, View dcrView){
-        Book book = new Book(title, 0);
+        Book book = new Book(title, LIST_IDENT);
         //check for other fields
         EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_curr);
         if (!etAuthor.getText().toString().equals("")) {
@@ -115,9 +128,18 @@ public class CurrentlyReadingFrag extends Fragment {
                                     return;
                                 }
                                 Book book = makeBook(etBookTitle.getText().toString(), dcrView);
-                                bookList.add(book);
-                                noBooks.setVisibility(View.GONE);
-                                list.setAdapter(bookAdapter);
+                                //only proceed if can insert book into db
+                                if(dbHelper.addBook(book)){
+                                    bookList.add(book);
+                                    dbHelper.addBook(book);
+                                    dbHelper.printDbToLog();
+                                    noBooks.setVisibility(View.GONE);
+                                    list.setAdapter(bookAdapter);
+                                }
+                                else{
+                                    Toast.makeText(getContext(), getString(R.string.book_in_db), Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
 
                                 //Dismiss once everything is OK.
                                 dLog.dismiss();
@@ -163,6 +185,10 @@ public class CurrentlyReadingFrag extends Fragment {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                for(int i = 0; i < list.getCount(); i++){
+                    View v = list.getChildAt(i);
+                    v.findViewById(R.id.selected_book_buttons).setVisibility(View.GONE);
+                }
                 if(view.findViewById(R.id.selected_book_buttons).getVisibility() == View.GONE){
                     view.findViewById(R.id.selected_book_buttons).setVisibility(View.VISIBLE);
 
@@ -187,7 +213,9 @@ public class CurrentlyReadingFrag extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which){
                             case DialogInterface.BUTTON_POSITIVE:
-                                bookList.remove(position);
+                                Book b = bookList.remove(position);
+                                dbHelper.deleteBook(b.getBookTitle(), b.getAuthor());
+                                dbHelper.printDbToLog();
                                 list.setAdapter(bookAdapter);
                                 if(bookList.isEmpty()){
                                     noBooks.setVisibility(View.VISIBLE);

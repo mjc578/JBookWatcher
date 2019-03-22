@@ -55,7 +55,7 @@ public class FinishedReadingFrag extends Fragment {
         //instance our database
         dbHelper = new BookDbHelper(getContext());
         //load list of books that belong to this list category
-        bookList = dbHelper.getListEntries(1);
+        bookList = dbHelper.getListEntries(LIST_IDENT);
         bookAdapter = new BookListAdapter(getContext(), bookList);
 
         list = crView.findViewById(R.id.finished_read_list_view);
@@ -161,7 +161,8 @@ public class FinishedReadingFrag extends Fragment {
                                     list.setAdapter(bookAdapter);
                                 }
                                 else{
-                                    Toast.makeText(getContext(), "Book already exists in one of your lists", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), getString(R.string.book_in_db), Toast.LENGTH_SHORT).show();
+                                    return;
                                 }
                                 dLog.dismiss();
                             }
