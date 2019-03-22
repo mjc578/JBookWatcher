@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -214,7 +215,7 @@ public class CurrentlyReadingFrag extends Fragment {
                         switch (which){
                             case DialogInterface.BUTTON_POSITIVE:
                                 Book b = bookList.remove(position);
-                                dbHelper.deleteBook(b.getBookTitle(), b.getAuthor());
+                                dbHelper.deleteBook(b);
                                 dbHelper.printDbToLog();
                                 list.setAdapter(bookAdapter);
                                 if(bookList.isEmpty()){
@@ -278,11 +279,16 @@ public class CurrentlyReadingFrag extends Fragment {
                                     Toast.makeText(getContext(), R.string.no_titleauth, Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                bookList.remove(currBook);
-                                Book book = makeBook(currBook.getBookTitle(), dcrView);
-                                bookList.add(book);
-                                list.setAdapter(bookAdapter);
-
+                                int i = bookList.indexOf(currBook);
+                                Book book = makeBook(etBookTitle.getText().toString(), dcrView);
+                                if(dbHelper.updateBook(currBook, book)){
+                                    bookList.set(i, book);
+                                    list.setAdapter(bookAdapter);
+                                }
+                                else{
+                                    Toast.makeText(getContext(), getString(R.string.book_in_db), Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
                                 //Dismiss once everything is OK.
                                 dLog.dismiss();
                             }

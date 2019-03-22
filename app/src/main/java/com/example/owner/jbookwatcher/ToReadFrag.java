@@ -168,7 +168,7 @@ public class ToReadFrag extends Fragment {
                         switch (which){
                             case DialogInterface.BUTTON_POSITIVE:
                                 Book b = bookList.remove(position);
-                                dbHelper.deleteBook(b.getBookTitle(), b.getAuthor());
+                                dbHelper.deleteBook(b);
                                 dbHelper.printDbToLog();
                                 list.setAdapter(bookAdapter);
                                 if(bookList.isEmpty()){
@@ -220,12 +220,16 @@ public class ToReadFrag extends Fragment {
                                     Toast.makeText(getContext(), R.string.no_titleauth, Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                //TODO: need to update rather than remove and reinsert
-                                bookList.remove(currBook);
-                                Book book = makeBook(currBook.getBookTitle(), dcrView);
-                                bookList.add(book);
-                                list.setAdapter(bookAdapter);
-
+                                int i = bookList.indexOf(currBook);
+                                Book book = makeBook(etBookTitle.getText().toString(), dcrView);
+                                if(dbHelper.updateBook(currBook, book)){
+                                    bookList.set(i, book);
+                                    list.setAdapter(bookAdapter);
+                                }
+                                else{
+                                    Toast.makeText(getContext(), getString(R.string.book_in_db), Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
                                 //Dismiss once everything is OK.
                                 dLog.dismiss();
                             }

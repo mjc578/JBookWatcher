@@ -107,14 +107,14 @@ public class BookDbHelper extends SQLiteOpenHelper {
         c.close();
     }
 
-    public void deleteBook(String bookTitle, String bookAuthor){
+    public void deleteBook(Book book){
         SQLiteDatabase db = this.getWritableDatabase();
         String whereClause = BookEntry.COLUMN_BOOK_NAME + " = ? AND " + BookEntry.COLUMN_BOOK_AUTHOR + " = ?";
-        String[] whereArgs = new String[] { bookTitle, bookAuthor };
+        String[] whereArgs = new String[] { book.getBookTitle(), book.getAuthor() };
         db.delete(BookEntry.TABLE_NAME, whereClause, whereArgs);
     }
 
-    public boolean updateBook(Book book){
+    public boolean updateBook(Book toReplace, Book book){
         SQLiteDatabase db = this.getWritableDatabase();
         //don't insert book if it already exists in ANY of the three lists
         if(checkIfDuplicate(book)){
@@ -128,12 +128,12 @@ public class BookDbHelper extends SQLiteOpenHelper {
         vals.put(BookEntry.COLUMN_DATE_FINISHED,book.getEndDate());
         vals.put(BookEntry.COLUMN_LIST_INDICATOR, book.getListIndicator());
         String q = BookEntry.COLUMN_BOOK_NAME + "=? AND " + BookEntry.COLUMN_BOOK_AUTHOR + "=?";
-        db.update(BookEntry.TABLE_NAME, vals, q, new String[]{book.getBookTitle(), book.getAuthor()});
+        db.update(BookEntry.TABLE_NAME, vals, q, new String[]{toReplace.getBookTitle(), toReplace.getAuthor()});
         return true;
     }
 
     //method to query into db to see if a book already exists in any list
-    public boolean checkIfDuplicate(Book book){
+    private boolean checkIfDuplicate(Book book){
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + BookEntry.TABLE_NAME +
                 " WHERE " + BookEntry.COLUMN_BOOK_NAME +
