@@ -6,12 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.owner.jbookwatcher.Book;
 import com.example.owner.jbookwatcher.data.BookContract.BookEntry;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 
 
 public class BookDbHelper extends SQLiteOpenHelper {
@@ -71,8 +71,12 @@ public class BookDbHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    public void addBook(Book book){
+    public boolean addBook(Book book){
         SQLiteDatabase db = this.getWritableDatabase();
+        //don't insert book if it already exists in ANY of the three lists
+        if(checkIfDuplicate(book)){
+            return false;
+        }
         ContentValues vals = new ContentValues();
         vals.put(BookEntry.COLUMN_BOOK_NAME, book.getBookTitle());
         vals.put(BookEntry.COLUMN_BOOK_AUTHOR, book.getAuthor());
@@ -81,6 +85,7 @@ public class BookDbHelper extends SQLiteOpenHelper {
         vals.put(BookEntry.COLUMN_DATE_FINISHED,book.getEndDate());
         vals.put(BookEntry.COLUMN_LIST_INDICATOR, book.getListIndicator());
         db.insert(BookEntry.TABLE_NAME, null, vals);
+        return true;
     }
 
     public void printDbToLog(){
@@ -103,10 +108,28 @@ public class BookDbHelper extends SQLiteOpenHelper {
 
     public void deleteBook(String bookTitle, String bookAuthor){
 
+        SQLiteDatabase db = this.getWritableDatabase();
+        String whereClause = BookEntry.COLUMN_BOOK_NAME + " = ? AND " + BookEntry.COLUMN_BOOK_AUTHOR + " = ?";
+        String[] whereArgs = new String[] { bookTitle, bookAuthor };
+        db.delete(BookEntry.TABLE_NAME, whereClause, whereArgs);
     }
 
     public void updateBook(){
 
+    }
+
+    //method to query into db to see if a book already exists in any list
+    public boolean checkIfDuplicate(Book book){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + BookEntry.TABLE_NAME +
+                " WHERE " + BookEntry.COLUMN_BOOK_NAME +
+                "= ? AND " + BookEntry.COLUMN_BOOK_AUTHOR +
+                "= ?";
+        Cursor c = db.rawQuery(query, new String[]{book.getBookTitle(), book.getAuthor()});
+        int cNum = c.getCount();
+        c.close();
+        //returns true if it is a duplicate
+        return cNum != 0;
     }
 
 }

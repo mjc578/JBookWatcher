@@ -32,6 +32,7 @@ import java.util.Locale;
  */
 public class FinishedReadingFrag extends Fragment {
 
+    private final int LIST_IDENT = 1;
     private ArrayList<Book> bookList;
     private BookListAdapter bookAdapter;
     private ListView list;
@@ -89,7 +90,7 @@ public class FinishedReadingFrag extends Fragment {
     }
 
     public Book makeBook(String title, View dcrView){
-        Book book = new Book(title, 1);
+        Book book = new Book(title, LIST_IDENT);
         //check for other fields
         EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_finished);
         if (ul.editHasText(etAuthor)) {
@@ -150,13 +151,18 @@ public class FinishedReadingFrag extends Fragment {
                                     Toast.makeText(getContext(), "Cannot have finish date before start date", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                Book book = makeBook(etBookAuthor.getText().toString(), dcrView);
-                                bookList.add(book);
-                                dbHelper.addBook(book);
-                                dbHelper.printDbToLog();
-                                noBooks.setVisibility(View.GONE);
-                                list.setAdapter(bookAdapter);
-
+                                Book book = makeBook(etBookTitle.getText().toString(), dcrView);
+                                //only proceed if can insert book into db
+                                if(dbHelper.addBook(book)){
+                                    bookList.add(book);
+                                    dbHelper.addBook(book);
+                                    dbHelper.printDbToLog();
+                                    noBooks.setVisibility(View.GONE);
+                                    list.setAdapter(bookAdapter);
+                                }
+                                else{
+                                    Toast.makeText(getContext(), "Book already exists in one of your lists", Toast.LENGTH_SHORT).show();
+                                }
                                 dLog.dismiss();
                             }
                         });
@@ -199,7 +205,9 @@ public class FinishedReadingFrag extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which){
                             case DialogInterface.BUTTON_POSITIVE:
-                                bookList.remove(position);
+                                Book b = bookList.remove(position);
+                                dbHelper.deleteBook(b.getBookTitle(), b.getAuthor());
+                                dbHelper.printDbToLog();
                                 list.setAdapter(bookAdapter);
                                 if(bookList.isEmpty()){
                                     noBooks.setVisibility(View.VISIBLE);
