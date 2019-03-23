@@ -4,28 +4,28 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/entryBookCover"
+        android:id="@+id/search_book_cover"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_margin="8dp"
         android:contentDescription="Desc" />
 
     <TextView
-        android:id="@+id/tvTitle"
+        android:id="@+id/search_tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:layout_toEndOf="@+id/entryBookCover"
+        android:layout_toEndOf="@+id/search_book_cover"
         android:text="Placeholder Title"
         android:textSize="24sp" />
 
     <TextView
-        android:id="@+id/tvAuthor"
+        android:id="@+id/search_tv_author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvTitle"
+        android:layout_below="@+id/search_tv_title"
         android:layout_marginStart="8dp"
-        android:layout_toEndOf="@+id/entryBookCover"
+        android:layout_toEndOf="@+id/search_book_cover"
         android:text="Placeholder Author"
         android:textSize="12sp" />
 </RelativeLayout>
