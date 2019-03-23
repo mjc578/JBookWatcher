@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class Book {
 
     private String bookTitle;
-    private String openLibId;
+    private String olid;
     private int listIndicator;
     private String author = null;
     private String startDate = null;
@@ -21,8 +21,8 @@ public class Book {
         return bookTitle;
     }
 
-    public String getOpenLibraryId(){
-        return openLibId;
+    public String getOLID(){
+        return olid;
     }
 
     public String getAuthor(){
@@ -59,12 +59,12 @@ public class Book {
 
     // Get medium sized book cover from covers API
     public String getCoverUrl() {
-        return "http://covers.openlibrary.org/b/olid/" + openLibId + "-M.jpg?default=false";
+        return "https://covers.openlibrary.org/b/olid/" + olid + "-S.jpg?default=false";
     }
 
     // Get large sized book cover from covers API
     public String getLargeCoverUrl() {
-        return "http://covers.openlibrary.org/b/olid/" + openLibId + "-L.jpg?default=false";
+        return "https://covers.openlibrary.org/b/olid/" + olid + "-L.jpg?default=false";
     }
 
     // Returns a Book given the expected JSON
@@ -72,12 +72,12 @@ public class Book {
         Book book = new Book();
         try {
             // Deserialize json into object fields
-            // Check if a cover edition is available
+            // get isbn (edition key for safety net)
             if (jsonObject.has("cover_edition_key"))  {
-                book.openLibId = jsonObject.getString("cover_edition_key");
+                book.olid = jsonObject.getString("cover_edition_key");
             } else if(jsonObject.has("edition_key")) {
                 final JSONArray ids = jsonObject.getJSONArray("edition_key");
-                book.openLibId = ids.getString(0);
+                book.olid = ids.getString(0);
             }
             book.bookTitle = jsonObject.has("title_suggest") ? jsonObject.getString("title_suggest") : "";
             book.author = getAuthor(jsonObject);
@@ -106,7 +106,7 @@ public class Book {
 
     // Decodes array of book json results into business model objects
     public static ArrayList<Book> fromJson(JSONArray jsonArray) {
-        ArrayList<Book> books = new ArrayList<Book>(jsonArray.length());
+        ArrayList<Book> books = new ArrayList<>(jsonArray.length());
         // Process each result in json array, decode and convert to business
         // object
         for (int i = 0; i < jsonArray.length(); i++) {
