@@ -306,7 +306,27 @@ public class CurrentlyReadingFrag extends Fragment {
         moveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Implement this when you implement database!", Toast.LENGTH_SHORT).show();
+                /*new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.move_title)
+                        .setSingleChoiceItems(new String[]{"Finished Reading", "To Read"}, 0, null)
+                        .setPositiveButton(R.string.move, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                dialog.dismiss();
+                                Book b = bookList.remove(position);
+                                list.setAdapter(bookAdapter);
+                                int selectedPosition = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+                                //0 for Finished Reading, 1 for To Read
+                                if(selectedPosition == 0){
+                                    //ul.moveToFinishedReading(dbHelper, b);
+                                }
+                                else{
+                                    //ul.moveToToRead(dbHelper, b);
+                                }
+
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();*/
             }
         });
     }
