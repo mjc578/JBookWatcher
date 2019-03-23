@@ -19,10 +19,10 @@ public class PageFragAdapter extends FragmentPagerAdapter {
                 return new GoalFragment();
 
             case 1:
-                return new ListsFragment();
+                return new SearchFragment();
 
             default:
-                return new StatsFragment();
+                return new ListsFragment();
         }
     }
 
@@ -39,10 +39,10 @@ public class PageFragAdapter extends FragmentPagerAdapter {
                 return "Goal";
 
             case 1:
-                return "Book Lists";
+                return "Search";
 
             default:
-                return "Statistics";
+                return "Book Lists";
         }
     }
 }

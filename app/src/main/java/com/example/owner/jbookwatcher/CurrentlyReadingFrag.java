@@ -44,7 +44,7 @@ public class CurrentlyReadingFrag extends Fragment {
         // Required empty public constructor
     }
 
-
+/*
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -326,8 +326,9 @@ public class CurrentlyReadingFrag extends Fragment {
                             }
                         })
                         .setNegativeButton("Cancel", null)
-                        .show();*/
+                        .show();
             }
         });
     }
+    */
 }

@@ -44,7 +44,7 @@ public class BookDbHelper extends SQLiteOpenHelper {
         // to simply to discard the data and start over
         db.execSQL(SQL_DELETE_ENTRIES);
         onCreate(db);
-    }
+    }/*
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
     }
@@ -145,5 +145,5 @@ public class BookDbHelper extends SQLiteOpenHelper {
         //returns true if it is a duplicate
         return cNum != 0;
     }
-
+*/
 }

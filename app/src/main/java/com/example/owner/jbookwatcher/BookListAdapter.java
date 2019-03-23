@@ -11,14 +11,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class BookListAdapter extends ArrayAdapter<Book> {
-
     private ArrayList<Book> bookList;
 
     public BookListAdapter(Context context, ArrayList<Book> bookList){
+
         super(context, 0, bookList);
         this.bookList = bookList;
     }
-
+/*
     @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -60,5 +60,5 @@ public class BookListAdapter extends ArrayAdapter<Book> {
     //method for retrieving the saved project list when resuming/creating activity
     public ArrayList<Book> getBookList(){
         return bookList;
-    }
+    }*/
 }
