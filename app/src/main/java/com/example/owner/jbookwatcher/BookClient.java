@@ -26,4 +26,9 @@ public class BookClient {
             e.printStackTrace();
         }
     }
+
+    public void getBookDetails(String olid, JsonHttpResponseHandler handler) {
+        String url = getApiUrl("books/");
+        client.get(url + olid + ".json", handler);
+    }
 }
