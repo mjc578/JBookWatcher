@@ -37,5 +37,7 @@
     <string name="book_in_db">Book already exists in one of your lists</string>
     <string name="move_title">Choose List to Move to</string>
     <string name="search">Search</string>
+    <string name="search_start">Add books to your lists here. Search to get started!</string>
+    <string name="no_book_results">No book results. Try again.</string>
 
 </resources>

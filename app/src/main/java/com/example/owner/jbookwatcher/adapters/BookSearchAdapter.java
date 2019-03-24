@@ -1,4 +1,4 @@
-package com.example.owner.jbookwatcher.data;
+package com.example.owner.jbookwatcher.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -20,11 +20,8 @@ public class BookSearchAdapter extends ArrayAdapter<Book> {
         super(context, 0, aBooks);
     }
 
-    // Translates a particular `Book` given a position
-    // into a relevant row within an AdapterView
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // Get the data item for this position
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext())

@@ -1,10 +1,14 @@
-package com.example.owner.jbookwatcher;
+package com.example.owner.jbookwatcher.adapters;
 
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.example.owner.jbookwatcher.fragments.GoalFragment;
+import com.example.owner.jbookwatcher.fragments.ListsFragment;
+import com.example.owner.jbookwatcher.fragments.SearchFragment;
 
 public class PageFragAdapter extends FragmentPagerAdapter {
 

@@ -1,20 +1,13 @@
-package com.example.owner.jbookwatcher;
+package com.example.owner.jbookwatcher.fragments;
 
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.owner.jbookwatcher.Book;
+import com.example.owner.jbookwatcher.adapters.BookListAdapter;
+import com.example.owner.jbookwatcher.UtilityLibrary;
 import com.example.owner.jbookwatcher.data.BookDbHelper;
 
 import java.util.ArrayList;
@@ -23,9 +16,9 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ToReadFrag extends Fragment {
+public class CurrentlyReadingFrag extends Fragment {
 
-    private final int LIST_IDENT = 2;
+    private final int LIST_IDENT = 0;
     private ArrayList<Book> bookList;
     private BookListAdapter bookAdapter;
     private ListView list;
@@ -33,7 +26,7 @@ public class ToReadFrag extends Fragment {
     private UtilityLibrary ul;
     private BookDbHelper dbHelper;
 
-    public ToReadFrag() {
+    public CurrentlyReadingFrag() {
         // Required empty public constructor
     }
 
@@ -42,7 +35,7 @@ public class ToReadFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View crView = inflater.inflate(R.layout.fragment_to_read, container, false);
+        View crView = inflater.inflate(R.layout.fragment_currently_reading, container, false);
         ul = new UtilityLibrary();
 
         //instance our database
@@ -51,8 +44,8 @@ public class ToReadFrag extends Fragment {
         bookList = dbHelper.getListEntries(LIST_IDENT);
         bookAdapter = new BookListAdapter(getContext(), bookList);
 
-        list = crView.findViewById(R.id.to_read_list_view);
-        noBooks = crView.findViewById(R.id.to_read_list_text_view);
+        list = crView.findViewById(R.id.curr_read_list_view);
+        noBooks = crView.findViewById(R.id.curr_list_text_view);
 
         //set list adapter on book list if there are any in db
         if(!bookList.isEmpty()){
@@ -79,22 +72,33 @@ public class ToReadFrag extends Fragment {
     public Book makeBook(String title, View dcrView){
         Book book = new Book(title, LIST_IDENT);
         //check for other fields
-        EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_to_read);
+        EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_curr);
         if (!etAuthor.getText().toString().equals("")) {
             book.setAuthor(etAuthor.getText().toString());
         }
-        EditText etPageNum = dcrView.findViewById(R.id.edit_text_book_pages_to_read);
+        EditText etPageNum = dcrView.findViewById(R.id.edit_text_book_pages_curr);
         if (!etPageNum.getText().toString().equals("")) {
             book.setPageNum(Integer.parseInt(etPageNum.getText().toString()));
+        }
+        EditText etStartDate = dcrView.findViewById(R.id.edit_text_curr_read_start_date);
+        if (!etStartDate.getText().toString().equals("")) {
+            book.setStartDate(etStartDate.getText().toString());
         }
         return book;
     }
 
     private void setFabulousButton(final View crView) {
-        crView.findViewById(R.id.fab_to_read).setOnClickListener(new View.OnClickListener() {
+        crView.findViewById(R.id.fab_curr_read).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final View dcrView = View.inflate(getContext(), R.layout.to_read_dialog, null);
+                final View dcrView = View.inflate(getContext(), R.layout.currently_reading_dialog, null);
+                //TODO: FIX THE BROKEN DOUBLE CLICK ON DATE EDIT TEXT
+                dcrView.findViewById(R.id.edit_text_curr_read_start_date).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        datePicker(dcrView);
+                    }
+                });
                 final AlertDialog dLog = makeAlertDLog(dcrView, "Enter Book Info");
                 dLog.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
@@ -104,9 +108,9 @@ public class ToReadFrag extends Fragment {
 
                             @Override
                             public void onClick(View view) {
-                                EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_to_read);
-                                EditText etBookAuthor = dcrView.findViewById(R.id.edit_text_author_to_read);
-                                if (!ul.editHasText(etBookTitle) || !ul.editHasText(etBookAuthor)) {
+                                EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_curr);
+                                EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_curr);
+                                if (!ul.editHasText(etBookTitle) || !ul.editHasText(etAuthor)) {
                                     Toast.makeText(getContext(), R.string.no_titleauth, Toast.LENGTH_SHORT).show();
                                     return;
                                 }
@@ -120,7 +124,7 @@ public class ToReadFrag extends Fragment {
                                     list.setAdapter(bookAdapter);
                                 }
                                 else{
-                                    Toast.makeText(getContext(), "Book already exists in one of your lists", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), getString(R.string.book_in_db), Toast.LENGTH_SHORT).show();
                                     return;
                                 }
 
@@ -131,6 +135,35 @@ public class ToReadFrag extends Fragment {
                     }
                 });
                 dLog.show();
+            }
+        });
+    }
+
+    private void datePicker(final View dcrView) {
+        final Calendar myCalendar = Calendar.getInstance();
+
+        final EditText dateET = dcrView.findViewById(R.id.edit_text_curr_read_start_date);
+        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                String myFormat = "MM/dd/yyyy";
+                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+                dateET.setText(sdf.format(myCalendar.getTime()));
+            }
+
+        };
+
+        dateET.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(getContext(), date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
     }
@@ -187,6 +220,7 @@ public class ToReadFrag extends Fragment {
                         .setNegativeButton("No", dialogListener).show();
             }
         });
+
     }
 
     private void setBookEditListener(final View v, final int position){
@@ -195,11 +229,15 @@ public class ToReadFrag extends Fragment {
         editText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vv) {
-                final View dcrView = View.inflate(getContext(), R.layout.to_read_dialog, null);
-                final EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_to_read);
-                final EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_to_read);
-                final EditText etPageNum = dcrView.findViewById(R.id.edit_text_book_pages_to_read);
+                final View dcrView = View.inflate(getContext(), R.layout.currently_reading_dialog, null);
+                final EditText etStartDate = dcrView.findViewById(R.id.edit_text_curr_read_start_date);
+                final EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_curr);
+                final EditText etPageNum = dcrView.findViewById(R.id.edit_text_book_pages_curr);
+                final EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_curr);
                 //fill edit texts with current data
+                if(currBook.getStartDate() != null){
+                    etStartDate.setText(currBook.getStartDate());
+                }
                 if(currBook.getAuthor() != null){
                     etAuthor.setText(currBook.getAuthor());
                 }
@@ -207,6 +245,13 @@ public class ToReadFrag extends Fragment {
                     etPageNum.setText(currBook.getPageNum() + "");
                 }
                 etBookTitle.setText(currBook.getBookTitle());
+                //TODO: FIX THE BROKEN DOUBLE CLICK ON DATE EDIT TEXT
+                dcrView.findViewById(R.id.edit_text_curr_read_start_date).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        datePicker(dcrView);
+                    }
+                });
                 final AlertDialog dLog = makeAlertDLog(dcrView, "Edit Book Info");
                 dLog.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
@@ -247,8 +292,29 @@ public class ToReadFrag extends Fragment {
         moveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Implement this when you implement database!", Toast.LENGTH_SHORT).show();
+                /*new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.move_title)
+                        .setSingleChoiceItems(new String[]{"Finished Reading", "To Read"}, 0, null)
+                        .setPositiveButton(R.string.move, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                dialog.dismiss();
+                                Book b = bookList.remove(position);
+                                list.setAdapter(bookAdapter);
+                                int selectedPosition = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+                                //0 for Finished Reading, 1 for To Read
+                                if(selectedPosition == 0){
+                                    //ul.moveToFinishedReading(dbHelper, b);
+                                }
+                                else{
+                                    //ul.moveToToRead(dbHelper, b);
+                                }
+
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
             }
         });
-    } */
+    }
+    */
 }

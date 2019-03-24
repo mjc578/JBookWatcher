@@ -1,38 +1,24 @@
-package com.example.owner.jbookwatcher;
+package com.example.owner.jbookwatcher.fragments;
 
 
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.content.DialogInterface;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.owner.jbookwatcher.Book;
+import com.example.owner.jbookwatcher.adapters.BookListAdapter;
+import com.example.owner.jbookwatcher.UtilityLibrary;
 import com.example.owner.jbookwatcher.data.BookDbHelper;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FinishedReadingFrag extends Fragment {
+public class ToReadFrag extends Fragment {
 
-    private final int LIST_IDENT = 1;
+    private final int LIST_IDENT = 2;
     private ArrayList<Book> bookList;
     private BookListAdapter bookAdapter;
     private ListView list;
@@ -40,16 +26,16 @@ public class FinishedReadingFrag extends Fragment {
     private UtilityLibrary ul;
     private BookDbHelper dbHelper;
 
-    public FinishedReadingFrag() {
+    public ToReadFrag() {
         // Required empty public constructor
     }
-/*
 
+/*
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View crView = inflater.inflate(R.layout.fragment_finished_reading, container, false);
+        View crView = inflater.inflate(R.layout.fragment_to_read, container, false);
         ul = new UtilityLibrary();
 
         //instance our database
@@ -58,8 +44,8 @@ public class FinishedReadingFrag extends Fragment {
         bookList = dbHelper.getListEntries(LIST_IDENT);
         bookAdapter = new BookListAdapter(getContext(), bookList);
 
-        list = crView.findViewById(R.id.finished_read_list_view);
-        noBooks = crView.findViewById(R.id.finished_list_text_view);
+        list = crView.findViewById(R.id.to_read_list_view);
+        noBooks = crView.findViewById(R.id.to_read_list_text_view);
 
         //set list adapter on book list if there are any in db
         if(!bookList.isEmpty()){
@@ -74,12 +60,6 @@ public class FinishedReadingFrag extends Fragment {
         return crView;
     }
 
-    @Override
-    public void onDestroy() {
-        dbHelper.close();
-        super.onDestroy();
-    }
-
     public AlertDialog makeAlertDLog(View v, String title){
         return new AlertDialog.Builder(getContext())
                 .setView(v)
@@ -92,45 +72,22 @@ public class FinishedReadingFrag extends Fragment {
     public Book makeBook(String title, View dcrView){
         Book book = new Book(title, LIST_IDENT);
         //check for other fields
-        EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_finished);
-        if (ul.editHasText(etAuthor)) {
+        EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_to_read);
+        if (!etAuthor.getText().toString().equals("")) {
             book.setAuthor(etAuthor.getText().toString());
         }
-        EditText etPageNum = dcrView.findViewById(R.id.edit_text_book_pages_finished);
-        if (ul.editHasText(etPageNum)) {
+        EditText etPageNum = dcrView.findViewById(R.id.edit_text_book_pages_to_read);
+        if (!etPageNum.getText().toString().equals("")) {
             book.setPageNum(Integer.parseInt(etPageNum.getText().toString()));
-        }
-        EditText etStartDate = dcrView.findViewById(R.id.edit_text_finished_read_start_date);
-        if (ul.editHasText(etStartDate)) {
-            book.setStartDate(etStartDate.getText().toString());
-        }
-        EditText etFinishDate = dcrView.findViewById(R.id.edit_text_finished_read_finish_date);
-        if(ul.editHasText(etFinishDate)) {
-            book.setEndDate(etFinishDate.getText().toString());
         }
         return book;
     }
 
     private void setFabulousButton(final View crView) {
-        crView.findViewById(R.id.fab_finished_read).setOnClickListener(new View.OnClickListener() {
+        crView.findViewById(R.id.fab_to_read).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final View dcrView = View.inflate(getContext(), R.layout.finished_reading_dialog, null);
-                final EditText etStartDate = dcrView.findViewById(R.id.edit_text_finished_read_start_date);
-                final EditText etFinishDate = dcrView.findViewById(R.id.edit_text_finished_read_finish_date);
-                //TODO: FIX THE BROKEN DOUBLE CLICK ON DATE EDIT TEXT
-                etStartDate.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ul.datePicker(etStartDate);
-                    }
-                });
-                etFinishDate.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ul.datePicker(etFinishDate);
-                    }
-                });
+                final View dcrView = View.inflate(getContext(), R.layout.to_read_dialog, null);
                 final AlertDialog dLog = makeAlertDLog(dcrView, "Enter Book Info");
                 dLog.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
@@ -140,15 +97,10 @@ public class FinishedReadingFrag extends Fragment {
 
                             @Override
                             public void onClick(View view) {
-                                EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_finished);
-                                EditText etBookAuthor = dcrView.findViewById(R.id.edit_text_author_finished);
+                                EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_to_read);
+                                EditText etBookAuthor = dcrView.findViewById(R.id.edit_text_author_to_read);
                                 if (!ul.editHasText(etBookTitle) || !ul.editHasText(etBookAuthor)) {
                                     Toast.makeText(getContext(), R.string.no_titleauth, Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                                //check for date consistency if necessary
-                                if(ul.checkDates(etStartDate, etFinishDate)){
-                                    Toast.makeText(getContext(), "Cannot have finish date before start date", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                                 Book book = makeBook(etBookTitle.getText().toString(), dcrView);
@@ -161,9 +113,11 @@ public class FinishedReadingFrag extends Fragment {
                                     list.setAdapter(bookAdapter);
                                 }
                                 else{
-                                    Toast.makeText(getContext(), getString(R.string.book_in_db), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Book already exists in one of your lists", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
+
+                                //Dismiss once everything is OK.
                                 dLog.dismiss();
                             }
                         });
@@ -226,7 +180,6 @@ public class FinishedReadingFrag extends Fragment {
                         .setNegativeButton("No", dialogListener).show();
             }
         });
-
     }
 
     private void setBookEditListener(final View v, final int position){
@@ -235,19 +188,11 @@ public class FinishedReadingFrag extends Fragment {
         editText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vv) {
-                final View dcrView = View.inflate(getContext(), R.layout.finished_reading_dialog, null);
-                final EditText etStartDate = dcrView.findViewById(R.id.edit_text_finished_read_start_date);
-                final EditText etFinishDate = dcrView.findViewById(R.id.edit_text_finished_read_finish_date);
-                final EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_finished);
-                final EditText etPageNum = dcrView.findViewById(R.id.edit_text_book_pages_finished);
-                final EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_finished);
+                final View dcrView = View.inflate(getContext(), R.layout.to_read_dialog, null);
+                final EditText etBookTitle = dcrView.findViewById(R.id.edit_text_book_title_to_read);
+                final EditText etAuthor = dcrView.findViewById(R.id.edit_text_author_to_read);
+                final EditText etPageNum = dcrView.findViewById(R.id.edit_text_book_pages_to_read);
                 //fill edit texts with current data
-                if(currBook.getStartDate() != null){
-                    etStartDate.setText(currBook.getStartDate());
-                }
-                if(currBook.getEndDate() != null){
-                    etFinishDate.setText(currBook.getEndDate());
-                }
                 if(currBook.getAuthor() != null){
                     etAuthor.setText(currBook.getAuthor());
                 }
@@ -255,19 +200,6 @@ public class FinishedReadingFrag extends Fragment {
                     etPageNum.setText(currBook.getPageNum() + "");
                 }
                 etBookTitle.setText(currBook.getBookTitle());
-                //TODO: FIX THE BROKEN DOUBLE CLICK ON DATE EDIT TEXT
-                etStartDate.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ul.datePicker(etStartDate);
-                    }
-                });
-                etFinishDate.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ul.datePicker(etFinishDate);
-                    }
-                });
                 final AlertDialog dLog = makeAlertDLog(dcrView, "Edit Book Info");
                 dLog.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
@@ -279,11 +211,6 @@ public class FinishedReadingFrag extends Fragment {
                             public void onClick(View view) {
                                 if (!ul.editHasText(etBookTitle) || !ul.editHasText(etAuthor)) {
                                     Toast.makeText(getContext(), R.string.no_titleauth, Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                                //if both dates are there, check there is no inconsistency
-                                if(ul.checkDates(etStartDate, etFinishDate)){
-                                    Toast.makeText(getContext(), "Cannot have finish date before start date", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                                 int i = bookList.indexOf(currBook);
@@ -316,6 +243,5 @@ public class FinishedReadingFrag extends Fragment {
                 Toast.makeText(getContext(), "Implement this when you implement database!", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-    */
+    } */
 }

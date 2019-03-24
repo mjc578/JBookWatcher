@@ -1,9 +1,10 @@
-package com.example.owner.jbookwatcher;
+package com.example.owner.jbookwatcher.fragments;
 
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,8 +12,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import com.example.owner.jbookwatcher.data.BookSearchAdapter;
+import com.example.owner.jbookwatcher.Book;
+import com.example.owner.jbookwatcher.BookClient;
+import com.example.owner.jbookwatcher.R;
+import com.example.owner.jbookwatcher.adapters.BookSearchAdapter;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -20,6 +26,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import cz.msebera.android.httpclient.Header;
 
 
 /**
@@ -31,6 +39,9 @@ public class SearchFragment extends Fragment {
     private ListView lvBooks;
     private BookSearchAdapter bookAdapter;
     private BookClient client;
+    private ProgressBar progressBar;
+    private TextView tvStartSearch;
+    private TextView tvNoSearchRes;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -44,6 +55,9 @@ public class SearchFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
+        tvStartSearch = sfView.findViewById(R.id.search_to_get_started);
+        tvNoSearchRes = sfView.findViewById(R.id.no_search_results);
+        progressBar = sfView.findViewById(R.id.progress);
         lvBooks = sfView.findViewById(R.id.book_search_list);
         ArrayList<Book> aBooks = new ArrayList<>();
         bookAdapter = new BookSearchAdapter(getContext(), aBooks);
@@ -53,10 +67,16 @@ public class SearchFragment extends Fragment {
     }
 
     private void fetchBooks(String query) {
+        progressBar.setVisibility(View.VISIBLE);
+        lvBooks.setVisibility(View.GONE);
+        tvStartSearch.setVisibility(View.GONE);
+        tvNoSearchRes.setVisibility(View.GONE);
         client = new BookClient();
         client.getBooks(query, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
+                progressBar.setVisibility(View.GONE);
+                lvBooks.setVisibility(View.VISIBLE);
                 try {
                     JSONArray docs;
                     if(response != null) {
@@ -64,6 +84,10 @@ public class SearchFragment extends Fragment {
                         docs = response.getJSONArray("docs");
                         // Parse json array into array of model objects
                         final ArrayList<Book> books = Book.fromJson(docs);
+                        //no search results
+                        if(books.isEmpty()){
+                            tvNoSearchRes.setVisibility(View.VISIBLE);
+                        }
                         // Remove all books from the adapter
                         bookAdapter.clear();
                         // Load model objects into the adapter
@@ -76,6 +100,11 @@ public class SearchFragment extends Fragment {
                     // Invalid JSON format, show appropriate error.
                     e.printStackTrace();
                 }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
