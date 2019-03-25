@@ -28,7 +28,6 @@
                 android:id="@+id/tv_book_detail_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Book of Title"
                 android:textSize="28sp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
@@ -38,7 +37,6 @@
                 android:id="@+id/tv_book_detail_author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Book of Author"
                 android:textSize="20sp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="5dp"/>
@@ -54,7 +52,6 @@
                 android:id="@+id/tv_book_detail_pages"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Book of Pages"
                 android:textSize="16sp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="5dp"
@@ -64,10 +61,18 @@
                 android:id="@+id/tv_book_detail_publish_year"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Book of Publish Year"
                 android:textSize="16sp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="5dp"/>
+
+            <TextView
+                android:id="@+id/tv_book_detail_weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"/>
 
             <Button
                 android:id="@+id/button_book_detail_add"

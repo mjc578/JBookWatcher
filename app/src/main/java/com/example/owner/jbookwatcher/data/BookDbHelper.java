@@ -22,6 +22,7 @@ public class BookDbHelper extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + BookEntry.TABLE_NAME + " (" +
+                    BookEntry.COLUMN_BOOK_OLID + " TEXT," +
                     BookEntry.COLUMN_BOOK_NAME + " TEXT," +
                     BookEntry.COLUMN_BOOK_AUTHOR + " TEXT," +
                     BookEntry.COLUMN_PAGE_NUMBER + " INTEGER," +
@@ -36,15 +37,18 @@ public class BookDbHelper extends SQLiteOpenHelper {
     public BookDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES);
     }
+
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
         db.execSQL(SQL_DELETE_ENTRIES);
         onCreate(db);
-    }/*
+    }
+
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
     }
@@ -59,13 +63,14 @@ public class BookDbHelper extends SQLiteOpenHelper {
         ArrayList<Book> list = new ArrayList<>();
 
         for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()){
+            String bOlid = c.getString(c.getColumnIndexOrThrow(BookEntry.COLUMN_BOOK_OLID));
             String bName = c.getString(c.getColumnIndexOrThrow(BookEntry.COLUMN_BOOK_NAME));
             String bAuthor = c.getString(c.getColumnIndexOrThrow(BookEntry.COLUMN_BOOK_AUTHOR));
             int bPagNum = c.getInt(c.getColumnIndexOrThrow(BookEntry.COLUMN_PAGE_NUMBER));
             String bStart = c.getString(c.getColumnIndexOrThrow(BookEntry.COLUMN_DATE_STARTED));
             String bEnd = c.getString(c.getColumnIndexOrThrow(BookEntry.COLUMN_DATE_FINISHED));
             int bIndicator = c.getInt(c.getColumnIndexOrThrow(BookEntry.COLUMN_LIST_INDICATOR));
-            Book b = new Book(bName, bAuthor, bPagNum, bStart, bEnd, bIndicator);
+            Book b = new Book(bOlid, bName, bAuthor, bStart, bEnd, bIndicator, bPagNum);
             list.add(b);
         }
         c.close();
@@ -79,6 +84,7 @@ public class BookDbHelper extends SQLiteOpenHelper {
             return false;
         }
         ContentValues vals = new ContentValues();
+        vals.put(BookEntry.COLUMN_BOOK_OLID, book.getOLID());
         vals.put(BookEntry.COLUMN_BOOK_NAME, book.getBookTitle());
         vals.put(BookEntry.COLUMN_BOOK_AUTHOR, book.getAuthor());
         vals.put(BookEntry.COLUMN_PAGE_NUMBER, book.getPageNum());
@@ -109,41 +115,22 @@ public class BookDbHelper extends SQLiteOpenHelper {
 
     public void deleteBook(Book book){
         SQLiteDatabase db = this.getWritableDatabase();
-        String whereClause = BookEntry.COLUMN_BOOK_NAME + " = ? AND " + BookEntry.COLUMN_BOOK_AUTHOR + " = ?";
-        String[] whereArgs = new String[] { book.getBookTitle(), book.getAuthor() };
+        String whereClause = BookEntry.COLUMN_BOOK_OLID + " = ?";
+        String[] whereArgs = new String[] { book.getOLID() };
         db.delete(BookEntry.TABLE_NAME, whereClause, whereArgs);
-    }
-
-    public boolean updateBook(Book toReplace, Book book){
-        SQLiteDatabase db = this.getWritableDatabase();
-        //don't insert book if it already exists in ANY of the three lists
-        if(checkIfDuplicate(book)){
-            return false;
-        }
-        ContentValues vals = new ContentValues();
-        vals.put(BookEntry.COLUMN_BOOK_NAME, book.getBookTitle());
-        vals.put(BookEntry.COLUMN_BOOK_AUTHOR, book.getAuthor());
-        vals.put(BookEntry.COLUMN_PAGE_NUMBER, book.getPageNum());
-        vals.put(BookEntry.COLUMN_DATE_STARTED, book.getStartDate());
-        vals.put(BookEntry.COLUMN_DATE_FINISHED,book.getEndDate());
-        vals.put(BookEntry.COLUMN_LIST_INDICATOR, book.getListIndicator());
-        String q = BookEntry.COLUMN_BOOK_NAME + "=? AND " + BookEntry.COLUMN_BOOK_AUTHOR + "=?";
-        db.update(BookEntry.TABLE_NAME, vals, q, new String[]{toReplace.getBookTitle(), toReplace.getAuthor()});
-        return true;
     }
 
     //method to query into db to see if a book already exists in any list
     private boolean checkIfDuplicate(Book book){
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + BookEntry.TABLE_NAME +
-                " WHERE " + BookEntry.COLUMN_BOOK_NAME +
-                "= ? AND " + BookEntry.COLUMN_BOOK_AUTHOR +
+                " WHERE " + BookEntry.COLUMN_BOOK_OLID +
                 "= ?";
-        Cursor c = db.rawQuery(query, new String[]{book.getBookTitle(), book.getAuthor()});
+        Cursor c = db.rawQuery(query, new String[]{book.getOLID()});
         int cNum = c.getCount();
         c.close();
         //returns true if it is a duplicate
         return cNum != 0;
     }
-*/
+
 }

@@ -13,10 +13,23 @@ public class Book implements Serializable {
 
     private String bookTitle;
     private String olid;
+    private String author;
+    private String startDate;
+    private String endDate;
     private int listIndicator;
-    private String author = null;
-    private String startDate = null;
-    private String endDate = null;
+    private int pageCount;
+
+    public Book(){}
+
+    public Book(String olid, String bookTitle, String author, String startDate, String endDate, int listIndicator, int pageCount){
+        this.olid = olid;
+        this.bookTitle = bookTitle;
+        this.author = author;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.listIndicator = listIndicator;
+        this.pageCount = pageCount;
+    }
 
     public String getBookTitle(){
         return bookTitle;
@@ -28,10 +41,6 @@ public class Book implements Serializable {
 
     public String getAuthor(){
         return author;
-    }
-
-    public void setAuthor(String author){
-        this.author = author;
     }
 
     public String getStartDate(){
@@ -58,6 +67,14 @@ public class Book implements Serializable {
         this.listIndicator = listIndicator;
     }
 
+    public int getPageNum(){
+        return pageCount;
+    }
+
+    public void setPageNum(int PageNum){
+        this.pageCount = PageNum;
+    }
+
     // Get medium sized book cover from covers API
     public String getCoverUrl() {
         return "https://covers.openlibrary.org/b/olid/" + olid + "-S.jpg?default=false";
@@ -69,7 +86,7 @@ public class Book implements Serializable {
     }
 
     // Returns a Book given the expected JSON
-    public static Book fromJson(JSONObject jsonObject) {
+    private static Book fromJson(JSONObject jsonObject) {
         Book book = new Book();
         try {
             // Deserialize json into object fields
