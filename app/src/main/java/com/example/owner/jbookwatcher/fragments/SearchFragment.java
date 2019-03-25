@@ -1,6 +1,7 @@
 package com.example.owner.jbookwatcher.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
@@ -11,12 +12,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.owner.jbookwatcher.Book;
 import com.example.owner.jbookwatcher.BookClient;
+import com.example.owner.jbookwatcher.BookDetailActivity;
 import com.example.owner.jbookwatcher.R;
 import com.example.owner.jbookwatcher.adapters.BookSearchAdapter;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -62,6 +65,8 @@ public class SearchFragment extends Fragment {
         ArrayList<Book> aBooks = new ArrayList<>();
         bookAdapter = new BookSearchAdapter(getContext(), aBooks);
         lvBooks.setAdapter(bookAdapter);
+
+        setListListener();
 
         return sfView;
     }
@@ -132,6 +137,18 @@ public class SearchFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String s) {
                 return false;
+            }
+        });
+    }
+
+    private void setListListener(){
+        lvBooks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent i = new Intent(getActivity(), BookDetailActivity.class);
+                i.putExtra(BOOK_DETAIL_KEY, bookAdapter.getItem(position));
+                startActivity(i);
             }
         });
     }
