@@ -7,8 +7,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.owner.jbookwatcher.data.BookDbHelper;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONException;
@@ -26,9 +28,10 @@ public class BookDetailActivity extends AppCompatActivity {
     TextView tvBookAuthor;
     TextView tvBookPages;
     TextView tvBookPubYear;
-    TextView tvAlreadyInList;
     TextView tvWeight;
     Button bAddToList;
+    BookDbHelper dbHelper;
+    Book b;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +43,17 @@ public class BookDetailActivity extends AppCompatActivity {
         tvBookAuthor = findViewById(R.id.tv_book_detail_author);
         tvBookPages = findViewById(R.id.tv_book_detail_pages);
         tvBookPubYear = findViewById(R.id.tv_book_detail_publish_year);
-        tvAlreadyInList = findViewById(R.id.tv_book_detail_already_in_list);
         tvWeight = findViewById(R.id.tv_book_detail_weight);
         bAddToList = findViewById(R.id.button_book_detail_add);
 
-        Book b = (Book) getIntent().getSerializableExtra(BOOK_DETAIL_KEY);
+        b = (Book) getIntent().getSerializableExtra(BOOK_DETAIL_KEY);
         setBookDetails(b);
+
+        //check if this book is a duplicate, set button/other view accordingly
+        dbHelper = new BookDbHelper(this);
+
+        setButtonListener();
+
     }
 
     public void setBookDetails(Book b){
@@ -71,7 +79,7 @@ public class BookDetailActivity extends AppCompatActivity {
                         String numPages = response.getString("number_of_pages") + " pages";
                         tvBookPages.setText(numPages);
                     } else {
-                        tvBookPages.setText(getString(R.string.no_page_couunt_info));
+                        tvBookPages.setText(getString(R.string.no_page_count_info));
                     }
                     if(response.has("weight")){
                         if(oneInTwenty()){
@@ -99,8 +107,18 @@ public class BookDetailActivity extends AppCompatActivity {
         return result == 10;
     }
 
-    //TODO: hide button to add tp list if book by author is already in list despite edition
-    private boolean isBookInDB(Book b){
-        return false;
+    private void setButtonListener(){
+        bAddToList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: they need to pick a list lmao
+                if(!dbHelper.addBook(b)){
+                    Toast.makeText(v.getContext(),"This book by " + b.getAuthor() + " is already in one of your lists", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    dbHelper.printDbToLog();
+                }
+            }
+        });
     }
 }

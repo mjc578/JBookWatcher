@@ -121,12 +121,12 @@ public class BookDbHelper extends SQLiteOpenHelper {
     }
 
     //method to query into db to see if a book already exists in any list
-    private boolean checkIfDuplicate(Book book){
+    public boolean checkIfDuplicate(Book book){
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + BookEntry.TABLE_NAME +
-                " WHERE " + BookEntry.COLUMN_BOOK_OLID +
-                "= ?";
-        Cursor c = db.rawQuery(query, new String[]{book.getOLID()});
+                " WHERE " + BookEntry.COLUMN_BOOK_AUTHOR +
+                "=? AND " + BookEntry.COLUMN_BOOK_NAME + "=?";
+        Cursor c = db.rawQuery(query, new String[]{book.getAuthor(), book.getBookTitle()});
         int cNum = c.getCount();
         c.close();
         //returns true if it is a duplicate
