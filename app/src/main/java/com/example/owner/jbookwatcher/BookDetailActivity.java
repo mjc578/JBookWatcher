@@ -1,5 +1,7 @@
 package com.example.owner.jbookwatcher;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -82,7 +84,7 @@ public class BookDetailActivity extends AppCompatActivity {
                         tvBookPages.setText(getString(R.string.no_page_count_info));
                     }
                     if(response.has("weight")){
-                        if(oneInTwenty()){
+                        if(oneInFifty()){
                             String weight = "...In case you were wondering, this book weighs " +
                                     response.getString("weight") + "!";
                             tvWeight.setText(weight);
@@ -98,7 +100,7 @@ public class BookDetailActivity extends AppCompatActivity {
         });
     }
 
-    private boolean oneInTwenty(){
+    private boolean oneInFifty(){
         Random r = new Random();
         int low = 0;
         int high = 49;
@@ -110,14 +112,34 @@ public class BookDetailActivity extends AppCompatActivity {
     private void setButtonListener(){
         bAddToList.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                //TODO: they need to pick a list lmao
-                if(!dbHelper.addBook(b)){
-                    Toast.makeText(v.getContext(),"This book by " + b.getAuthor() + " is already in one of your lists", Toast.LENGTH_LONG).show();
-                }
-                else{
-                    dbHelper.printDbToLog();
-                }
+            public void onClick(final View v) {
+                new AlertDialog.Builder(v.getContext())
+                        .setTitle(R.string.add_title)
+                        .setSingleChoiceItems(new String[]{"Currently Reading", "Finished Reading", "To Read"}, 0, null)
+                        .setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                int selectedPosition = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+                                switch(selectedPosition) {
+                                    case 0:
+                                        b.setListIndicator(0);
+                                        break;
+                                    case 1:
+                                        b.setListIndicator(1);
+                                        break;
+                                    case 2:
+                                        b.setListIndicator(2);
+                                }
+                                if(!dbHelper.addBook(b)) {
+                                    Toast.makeText(v.getContext(),"This book by " + b.getAuthor() + " is already in one of your lists", Toast.LENGTH_LONG).show();
+                                }
+                                else{
+                                    dbHelper.printDbToLog();
+                                }
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
             }
         });
     }

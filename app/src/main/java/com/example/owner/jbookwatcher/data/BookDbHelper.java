@@ -121,16 +121,27 @@ public class BookDbHelper extends SQLiteOpenHelper {
     }
 
     //method to query into db to see if a book already exists in any list
-    public boolean checkIfDuplicate(Book book){
+    private boolean checkIfDuplicate(Book book){
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + BookEntry.TABLE_NAME +
-                " WHERE " + BookEntry.COLUMN_BOOK_AUTHOR +
-                "=? AND " + BookEntry.COLUMN_BOOK_NAME + "=?";
-        Cursor c = db.rawQuery(query, new String[]{book.getAuthor(), book.getBookTitle()});
-        int cNum = c.getCount();
+        String query = "SELECT " + BookEntry.COLUMN_BOOK_NAME +
+                ", " + BookEntry.COLUMN_BOOK_AUTHOR +
+                " FROM " + BookEntry.TABLE_NAME;
+        Cursor c = db.rawQuery(query, null);
+        boolean bool = false;
+        for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()){
+            String bn = removePunc(c.getString(c.getColumnIndexOrThrow(BookEntry.COLUMN_BOOK_NAME)).toUpperCase());
+            String an = removePunc(c.getString(c.getColumnIndexOrThrow(BookEntry.COLUMN_BOOK_AUTHOR)).toUpperCase());
+            if(bn.matches(removePunc(book.getBookTitle().toUpperCase())) && an.matches(removePunc(book.getAuthor().toUpperCase()))){
+                bool = true;
+                break;
+            }
+        }
         c.close();
-        //returns true if it is a duplicate
-        return cNum != 0;
+        return bool;
+    }
+
+    private String removePunc(String s){
+        return s.replaceAll("\\p{Punct}", "");
     }
 
 }
