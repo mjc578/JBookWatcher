@@ -12,20 +12,10 @@
         android:layout_height="match_parent"
         android:text="@string/your_to_read_list_is_currently_empty"
         android:gravity="center"
-        android:id="@+id/to_read_list_text_view"/>
+        android:id="@+id/shared_list_text_view"/>
 
     <ListView android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/to_read_list_view"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/add_button"
-        android:layout_margin="16dp"
-        android:id="@+id/fab_to_read"
-        />
+        android:id="@+id/shared_list_view"/>
 
 </RelativeLayout>
