@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,7 +21,7 @@ import java.util.Random;
 
 import cz.msebera.android.httpclient.Header;
 
-public class BookDetailActivity extends AppCompatActivity {
+public class BookSearchDetailActivity extends AppCompatActivity {
 
     public static final String BOOK_DETAIL_KEY = "book";
     ImageView ivBookCover;

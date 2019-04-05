@@ -9,9 +9,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class UtilityLibrary {
+public class DateLibrary {
 
-    public UtilityLibrary(){}
+    public DateLibrary(){}
 
     //Checks if given edit text has input
     public boolean editHasText(EditText et){

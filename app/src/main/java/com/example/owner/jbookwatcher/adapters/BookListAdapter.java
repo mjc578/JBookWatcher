@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.owner.jbookwatcher.Book;
+import com.example.owner.jbookwatcher.R;
 
 import java.util.ArrayList;
 

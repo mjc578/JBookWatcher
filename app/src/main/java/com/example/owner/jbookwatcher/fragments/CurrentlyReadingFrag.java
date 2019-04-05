@@ -6,8 +6,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.owner.jbookwatcher.Book;
+import com.example.owner.jbookwatcher.DateLibrary;
 import com.example.owner.jbookwatcher.adapters.BookListAdapter;
-import com.example.owner.jbookwatcher.UtilityLibrary;
 import com.example.owner.jbookwatcher.data.BookDbHelper;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class CurrentlyReadingFrag extends Fragment {
     private BookListAdapter bookAdapter;
     private ListView list;
     private TextView noBooks;
-    private UtilityLibrary ul;
+    private DateLibrary ul;
     private BookDbHelper dbHelper;
 
     public CurrentlyReadingFrag() {
@@ -36,7 +36,7 @@ public class CurrentlyReadingFrag extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View crView = inflater.inflate(R.layout.fragment_currently_reading, container, false);
-        ul = new UtilityLibrary();
+        ul = new DateLibrary();
 
         //instance our database
         dbHelper = new BookDbHelper(getContext());
@@ -292,7 +292,7 @@ public class CurrentlyReadingFrag extends Fragment {
         moveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*new AlertDialog.Builder(getContext())
+                new AlertDialog.Builder(getContext())
                         .setTitle(R.string.move_title)
                         .setSingleChoiceItems(new String[]{"Finished Reading", "To Read"}, 0, null)
                         .setPositiveButton(R.string.move, new DialogInterface.OnClickListener() {
@@ -316,5 +316,5 @@ public class CurrentlyReadingFrag extends Fragment {
             }
         });
     }
-    */
+*/
 }

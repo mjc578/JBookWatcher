@@ -14,9 +14,9 @@ import com.example.owner.jbookwatcher.R;
 
 import java.util.ArrayList;
 
-public class BookSearchAdapter extends ArrayAdapter<Book> {
+public class BookAdapter extends ArrayAdapter<Book> {
 
-    public BookSearchAdapter(Context context, ArrayList<Book> aBooks) {
+    public BookAdapter(Context context, ArrayList<Book> aBooks) {
         super(context, 0, aBooks);
     }
 

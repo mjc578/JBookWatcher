@@ -44,5 +44,6 @@
     <string name="no_pub_year_info">No publish year information</string>
     <string name="no_page_count_info">No page count information</string>
     <string name="add">Add</string>
+    <string name="details">Details</string>
 
 </resources>

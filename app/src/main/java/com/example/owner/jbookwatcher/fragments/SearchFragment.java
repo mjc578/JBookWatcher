@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,9 +18,9 @@ import android.widget.TextView;
 
 import com.example.owner.jbookwatcher.Book;
 import com.example.owner.jbookwatcher.BookClient;
-import com.example.owner.jbookwatcher.BookDetailActivity;
+import com.example.owner.jbookwatcher.BookSearchDetailActivity;
 import com.example.owner.jbookwatcher.R;
-import com.example.owner.jbookwatcher.adapters.BookSearchAdapter;
+import com.example.owner.jbookwatcher.adapters.BookAdapter;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -40,7 +39,7 @@ public class SearchFragment extends Fragment {
 
     public static final String BOOK_DETAIL_KEY = "book";
     private ListView lvBooks;
-    private BookSearchAdapter bookAdapter;
+    private BookAdapter bookAdapter;
     private BookClient client;
     private ProgressBar progressBar;
     private TextView tvStartSearch;
@@ -63,7 +62,7 @@ public class SearchFragment extends Fragment {
         progressBar = sfView.findViewById(R.id.progress);
         lvBooks = sfView.findViewById(R.id.book_search_list);
         ArrayList<Book> aBooks = new ArrayList<>();
-        bookAdapter = new BookSearchAdapter(getContext(), aBooks);
+        bookAdapter = new BookAdapter(getContext(), aBooks);
         lvBooks.setAdapter(bookAdapter);
 
         setListListener();
@@ -146,7 +145,7 @@ public class SearchFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent i = new Intent(getActivity(), BookDetailActivity.class);
+                Intent i = new Intent(getActivity(), BookSearchDetailActivity.class);
                 i.putExtra(BOOK_DETAIL_KEY, bookAdapter.getItem(position));
                 startActivity(i);
             }
