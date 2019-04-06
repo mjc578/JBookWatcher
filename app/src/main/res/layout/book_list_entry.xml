@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@id/entry_book_info"
+        android:layout_below="@id/shared_entry_book_info"
         android:paddingBottom="16dp"
         android:background="#eeeeee"
         android:id="@+id/selected_book_buttons"

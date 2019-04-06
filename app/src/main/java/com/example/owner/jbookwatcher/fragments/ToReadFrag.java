@@ -3,6 +3,7 @@ package com.example.owner.jbookwatcher.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.owner.jbookwatcher.Book;
+import com.example.owner.jbookwatcher.BookAddedDetailActivity;
 import com.example.owner.jbookwatcher.DateLibrary;
 import com.example.owner.jbookwatcher.R;
 import com.example.owner.jbookwatcher.adapters.BookAdapter;
@@ -34,6 +36,7 @@ public class ToReadFrag extends Fragment {
     private TextView noBooks;
     private DateLibrary ud;
     private BookDbHelper dbHelper;
+    private String BOOK_DETAIL_KEY = "book";
 
     public ToReadFrag() {
         // Required empty public constructor
@@ -89,12 +92,14 @@ public class ToReadFrag extends Fragment {
         });
     }
 
-    private void setBookDetailListener(View view, int position){
+    private void setBookDetailListener(View view, final int position){
         TextView tvBookDetailButton = view.findViewById(R.id.entry_details_button);
         tvBookDetailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: open list entry details activity with this book's details
+                Intent i = new Intent(getActivity(), BookAddedDetailActivity.class);
+                i.putExtra(BOOK_DETAIL_KEY, bookAdapter.getItem(position));
+                startActivity(i);
             }
         });
     }
@@ -112,6 +117,9 @@ public class ToReadFrag extends Fragment {
                                 Book b = bookList.remove(position);
                                 dbHelper.deleteBook(b);
                                 list.setAdapter(bookAdapter);
+                                if(bookList.isEmpty()){
+                                    noBooks.setVisibility(View.VISIBLE);
+                                }
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:

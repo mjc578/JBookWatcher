@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".BookSearchDetailActivity"></activity>
+        <activity android:name=".BookAddedDetailActivity"></activity>
         <activity
             android:name=".MainActivity"
             android:windowSoftInputMode="adjustPan">
